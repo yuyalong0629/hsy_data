@@ -1,0 +1,49 @@
+// 布局容器固定宽度
+.basicWidth() {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+// 高度塌陷
+.clearfix() {
+  display: block;
+  content: 'clear';
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+// 单行文本省略号
+.ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本省略号
+.ellipisisClamp() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+// 导航登录/注册按钮
+.navBtn() {
+  color: #fff;
+  line-height: 30px;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  background-image: none;
+  white-space: nowrap;
+  padding: 0 15px;
+  font-size: 14px;
+  height: 32px;
+  margin: 0 5px;
+  border: 1px solid #da5054;
+  border-radius: 4px;
+}

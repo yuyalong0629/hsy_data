@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="author" contect="火烧云数据" />
+    <meta
+      name="keywords"
+      content="火烧云数据,短视频广告,投短视频广告,新媒体广告,短视频数据,短视频达人推荐,短视频达人榜单,短视频达人资源,短视频账号矩阵,kol资源,短视频大号,短视频分析,短视频数据分析,b站广告,小红书广告,b站up主数据,小红书数据"
+    />
+    <meta
+      name="description"
+      content="火烧云数据是短视频等新媒体领域广告投放权威的数据分析平台，提供b站数据、小红书数据等，广告主可实现快速搜索账号、作品商品内容，媒体主排行榜，相似账号查询，粉丝数据分析，广告价值评估和广告投后效果监测等，短视频广告投放快准稳。"
+    />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+    <title>火烧云数据-让天下没有难投的新媒体广告</title>
+    <style>
+      #preloadingAnimation {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: #ffffff;
+        user-select: none;
+        z-index: 9999;
+        overflow: hidden;
+      }
+      .lds-roller {
+        display: inline-block;
+        position: relative;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+      }
+      .lds-roller div {
+        animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        transform-origin: 32px 32px;
+      }
+      .lds-roller div:after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #da5054;
+        margin: -3px 0 0 -3px;
+      }
+      .lds-roller div:nth-child(1) {
+        animation-delay: -0.036s;
+      }
+      .lds-roller div:nth-child(1):after {
+        top: 50px;
+        left: 50px;
+      }
+      .lds-roller div:nth-child(2) {
+        animation-delay: -0.072s;
+      }
+      .lds-roller div:nth-child(2):after {
+        top: 54px;
+        left: 45px;
+      }
+      .lds-roller div:nth-child(3) {
+        animation-delay: -0.108s;
+      }
+      .lds-roller div:nth-child(3):after {
+        top: 57px;
+        left: 39px;
+      }
+      .lds-roller div:nth-child(4) {
+        animation-delay: -0.144s;
+      }
+      .lds-roller div:nth-child(4):after {
+        top: 58px;
+        left: 32px;
+      }
+      .lds-roller div:nth-child(5) {
+        animation-delay: -0.18s;
+      }
+      .lds-roller div:nth-child(5):after {
+        top: 57px;
+        left: 25px;
+      }
+      .lds-roller div:nth-child(6) {
+        animation-delay: -0.216s;
+      }
+      .lds-roller div:nth-child(6):after {
+        top: 54px;
+        left: 19px;
+      }
+      .lds-roller div:nth-child(7) {
+        animation-delay: -0.252s;
+      }
+      .lds-roller div:nth-child(7):after {
+        top: 50px;
+        left: 14px;
+      }
+      .lds-roller div:nth-child(8) {
+        animation-delay: -0.288s;
+      }
+      .lds-roller div:nth-child(8):after {
+        top: 45px;
+        left: 10px;
+      }
+      #preloadingAnimation .load-tips {
+        color: #da5054;
+        font-size: 2rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: 80px;
+        text-align: center;
+        width: 400px;
+        height: 64px;
+      }
+      @keyframes lds-roller {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but hsydata_v2.0 doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="app">
+      <div id="preloadingAnimation">
+        <div class="lds-roller">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="load-tips">Loading</div>
+      </div>
+    </div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
