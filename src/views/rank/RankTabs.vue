@@ -206,6 +206,7 @@ export default {
         margin-right: 8px;
         height: 42px;
         float: left;
+        border-radius: 50%;
       }
       p {
         display: inline-block;

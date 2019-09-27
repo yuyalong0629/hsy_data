@@ -5,13 +5,13 @@
         <router-link tag="span" to="/home">首页</router-link>
       </li>
       <li class="nav-list">
-        <router-link tag="span" to="/monitor">账号监控</router-link>
+        <router-link tag="span" to="/search">账号搜索</router-link>
       </li>
       <li class="nav-list">
         <router-link tag="span" to="/rank">排行榜</router-link>
       </li>
       <li class="nav-list">
-        <router-link tag="span" to="/search">账号搜索</router-link>
+        <router-link tag="span" to="/monitor">账号监控</router-link>
       </li>
       <!-- <li class="nav-list">
         <router-link tag="span" to="/about">关于我们</router-link>

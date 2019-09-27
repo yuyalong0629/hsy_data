@@ -76,7 +76,7 @@ export default {
                 pageNo: res.pageNo
               } || {}
             this.dayDataMap = res.dayDataMap || {}
-          } else if (res.code === 303) {
+          } else if (res.code === 303 || res.code === 300) {
             this.$message.warn(res.message)
             this.$router.go(-1)
             this.spinning = false

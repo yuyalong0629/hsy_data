@@ -6,12 +6,12 @@
       @change="changeTab"
       :tabBarStyle="{'text-align': 'center'}"
     >
-      <a-tab-pane key="1">
+      <!-- <a-tab-pane key="1">
         <span slot="tab">
           <icon-font type="icon-weixin" />扫码登录
         </span>
         <div id="login_container"></div>
-      </a-tab-pane>
+      </a-tab-pane>-->
       <a-tab-pane key="2">
         <span slot="tab">
           <icon-font type="icon-dengluren" />账号登录
@@ -83,7 +83,7 @@ export default {
   mixins: [mixinBasic],
   data() {
     return {
-      activeKey: '1',
+      activeKey: '2',
       form: this.$form.createForm(this)
     }
   },
@@ -121,9 +121,9 @@ export default {
               if (res.code === 200) {
                 this.loading = false
                 // Modal 显示/消失
-                // window.location.reload()
                 this.$emit('visibled', false)
                 this.$store.commit('login', res.userInfoMap)
+                window.location.reload()
                 // this.$message.success(timeFix() + ', ' + res.message, 1)
               } else {
                 this.loading = false
