@@ -117,6 +117,7 @@ export default {
       }).then(res => {
         if (res.code === 200) {
           this.$message.success(res.message)
+          this.visible = false
         } else {
           this.$message.error(res.message)
         }

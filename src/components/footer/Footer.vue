@@ -2,9 +2,9 @@
   <div class="footer">
     <div class="footer-wrapper">
       <div class="footer-left">
+        <router-link tag="h4" class="h4-title" to="/about" style="cursor: pointer;">关于我们</router-link>
         <h4 class="h4-title">联系我们</h4>
         <p>商务合作：0571-82565101</p>
-        <p>&nbsp;</p>
       </div>
       <div class="footer-middle">
         <h4 class="h4-title">加入我们</h4>

@@ -84,6 +84,7 @@
         <div class="similar-page">
           <a-pagination
             :total="total"
+            :current="current"
             :hideOnSinglePage="true"
             :pageSize="20"
             @change="changePage"
@@ -115,6 +116,7 @@ export default {
       count: 0,
       loading: false,
       total: 0,
+      current: 1,
       data: [],
       visible: false,
       spinning: false,
@@ -136,7 +138,9 @@ export default {
             this.data = res.page.result
             this.loading = false
             this.spinning = false
-            this.total = res.page.total
+            this.total = res.page.count
+            this.current =
+              res.page.index === 0 || res.page.index === 1 ? 1 : res.page.index
           } else {
             this.spinning = false
           }
@@ -148,6 +152,7 @@ export default {
     // 分页
     changePage(page, pageSize) {
       console.log(page)
+      this.current = page
       this.similarKolList({ kolId: this.$route.query.kolId, pageNo: page })
     },
     // 查看详情

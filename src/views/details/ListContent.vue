@@ -14,8 +14,10 @@
         <!-- img -->
         <template slot="actions">
           <div class="list-info-extra">
-            <img width="240" height="160" alt :src="item.coverImg" />
-            <a href="javascript:;" @click="copylink(item.sourceUrl)">
+            <a target="_blank" :href="item.sourceUrl">
+              <img width="240" height="160" alt :src="item.coverImg" />
+            </a>
+            <a href="javascript:;" style="color: #888;" @click="copylink(item.sourceUrl)">
               <a-icon type="link" />复制作品链接
             </a>
           </div>
@@ -24,19 +26,31 @@
           <!-- content -->
           <div class="list-info-content">
             <a-list-item-meta>
-              <a slot="title" target="_blank" :href="item.sourceUrl">{{item.title}}</a>
+              <a
+                slot="title"
+                target="_blank"
+                :href="item.sourceUrl"
+                v-html="listData.keyword ? light(item.title, listData.keyword) : item.title"
+              >{{item.title}}</a>
             </a-list-item-meta>
-            <a-popover placement="topLeft">
+            <a-popover placement="bottom">
               <template slot="content">
-                <p style="width: 360px; line-height: 24px;">{{item.summary}}</p>
+                <p
+                  style="width: 360px; line-height: 24px;"
+                  v-html="listData.keyword ? light(item.summary, listData.keyword) : item.summary"
+                >{{item.summary}}</p>
               </template>
-              <p class="list-info-text">{{item.summary}}</p>
+              <p
+                class="list-info-text"
+                v-html="listData.keyword ? light(item.summary, listData.keyword) : item.summary"
+              >{{item.summary}}</p>
             </a-popover>
             <!-- icon -->
             <a-tag
               class="list-info-tag"
               v-for="(cItem, index) in item.tags"
               :key="index"
+              v-html="listData.keyword ? light(cItem, listData.keyword) : cItem"
             >{{ cItem }}</a-tag>
           </div>
           <div class="list-info-actions">
@@ -55,7 +69,7 @@
                 {{item.collectNum}}
               </span>
               <span
-                @click="handleComment(item.comments)"
+                @click="handleComment(item.comments, listData.keyword)"
                 style="margin-right: 12px; cursor: pointer;"
               >
                 <a-icon type="message" style="color: #DA5054" />
@@ -75,7 +89,6 @@
       @cancel="handleCancel"
     >
       <hsy-comment :comment="comment" />
-      <!-- <hsy-comment :comment="comment[0]" /> -->
     </a-modal>
   </div>
 </template>
@@ -84,6 +97,7 @@
 import Comment from './Comment'
 import { getDetails, insearchData } from './index'
 import { mapState } from 'vuex'
+import { light } from 'utils/util'
 
 export default {
   name: 'ListContent',
@@ -109,7 +123,7 @@ export default {
         current: 1
       },
       visible: false,
-      comment: [],
+      comment: {},
       title: false
     }
   },
@@ -131,10 +145,11 @@ export default {
         : this.listData.index
   },
   methods: {
+    light,
     // 评论
-    handleComment(info) {
+    handleComment(info, keyword) {
       this.visible = true
-      this.comment = info
+      this.comment = { data: info, keyword: keyword }
     },
     // Modal cencel
     handleCancel(e) {
@@ -161,7 +176,8 @@ export default {
   watch: {
     listData(val) {
       this.$nextTick(() => {
-        this.pagination.total = val.total
+        this.title = false
+        this.pagination.total = val.count
         this.pagination.current =
           this.listData.index === 0 || this.listData.index === undefined
             ? 1
@@ -171,15 +187,17 @@ export default {
     defaultComment: {
       handler(val) {
         if (val) {
-          this.comment = this.listData.result[0].comments
+          // 搜评论默认展示第一条信息评论
+          this.comment = {
+            data: this.listData.result[0].comments,
+            keyword: this.listData.keyword
+          }
           this.visible = val
           this.title = '默认显示第一条评论'
           if (this.visible) {
             this.$emit('changeComment', false)
           }
-          return
         }
-        this.title = false
       },
       immediate: true,
       deep: true

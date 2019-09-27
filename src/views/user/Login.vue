@@ -124,7 +124,7 @@ export default {
                 // window.location.reload()
                 this.$emit('visibled', false)
                 this.$store.commit('login', res.userInfoMap)
-                this.$message.success(timeFix() + ', ' + res.message, 1)
+                // this.$message.success(timeFix() + ', ' + res.message, 1)
               } else {
                 this.loading = false
                 this.$message.success(res.message, 1.5)

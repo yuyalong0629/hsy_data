@@ -13,7 +13,13 @@
           <a-input placeholder="请粘贴作品链接" v-model="content" size="large" />
         </div>
         <div class="monitor-search" v-if="monitor === 2">
-          <a-input-search placeholder="请输入达人名称" size="large" @search="onSearch" enterButton />
+          <a-input-search
+            placeholder="请输入达人名称"
+            size="large"
+            v-model="wiseName"
+            @search="onSearch"
+            enterButton
+          />
           <ul class="monitor-search-result">
             <li
               :class="{active: isActive === index }"
@@ -40,10 +46,13 @@
           />
         </div>
         <p class="monitor-time">监控时长</p>
-        <a-radio-group @change="onChangeMonitorTime" :value="monitorTime">
+        <a-radio-group @change="onChangeMonitorTime" v-model="monitorTime">
           <a-radio :value="24">24小时</a-radio>
-          <a-radio :value="48">48小时</a-radio>
-          <a-radio :value="72">72小时</a-radio>
+          <a-radio :value="48" v-if="userInfo.userType === 0 && (this.monitor === 1)">48小时</a-radio>
+          <a-radio
+            :value="72"
+            v-if="userInfo.userType === 0 && (this.monitor === 1 && this.monitor === 2)"
+          >72小时</a-radio>
         </a-radio-group>
         <div class="monitor-start">
           <a-button type="primary" size="large" @click="onClickMonitor">开始监测</a-button>
@@ -59,6 +68,7 @@
 import moment from 'moment'
 import MonitorList from './MonitorList'
 import { addMonitor, searchKol } from 'api/monitor'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Monitor',
@@ -67,7 +77,8 @@ export default {
       monitor: 1,
       monitorTime: 24,
       content: '',
-      isActive: undefined,
+      wiseName: '',
+      isActive: 0,
       moment,
       timeValue: [
         moment(new Date()),
@@ -77,19 +88,58 @@ export default {
       changeList: false
     }
   },
+  mounted() {
+    // 判断是否从详情页跳转
+    if (this.$route.query.kolId && this.$route.query.name) {
+      this.monitor = 2
+      this.wiseName = this.$route.query.name
+      searchKol({ keyword: this.wiseName }).then(res => {
+        if (res.code === 200) {
+          this.searchInfo = res.kolInfos
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    }
+  },
   methods: {
     // 监控 radio
     onChangeMonitor(e) {
       this.monitor = e.target.value
-      console.log('radio checked', e.target.value)
+      // 切换初始化监控时长 Radio
+      this.monitorTime = 24
     },
     // 监控时长 radio
     onChangeMonitorTime(e) {
+      // 即时监控可以免费使用28小时
       this.monitorTime = e.target.value
+      // if (this.monitor === 1) {
+      //   if (e.target.value === 72 && this.userInfo.userType === 0) {
+      //     this.$message.warn(
+      //       '哎呀！您当前的会员等级无法使用此功能,立即购买或升级会员'
+      //     )
+      //     return
+      //   }
+      //   this.monitorTime = e.target.value
+      // }
+      // // 预约监控 48 / 72 => VIP
+      // if (this.monitor === 2) {
+      //   // 判断会员
+      //   if (
+      //     (e.target.value === 48 || e.target.value === 72) &&
+      //     this.userInfo.userType === 0
+      //   ) {
+      //     this.$message.warn(
+      //       '哎呀！您当前的会员等级无法使用此功能,立即购买或升级会员'
+      //     )
+      //     return
+      //   }
+      //   this.monitorTime = e.target.value
+      // }
     },
     // 预约监控 搜索
     onSearch(value) {
-      console.log(value)
+      // 搜索列表
       searchKol({ keyword: value }).then(res => {
         if (res.code === 200) {
           this.searchInfo = res.kolInfos
@@ -102,7 +152,6 @@ export default {
     onClickActive(id, key) {
       console.log(id)
       this.isActive = key
-      this.content = id
     },
     // 预约监控 日期选择
     onChangeDate(date, dateString) {
@@ -114,18 +163,36 @@ export default {
     },
     // 开始监控
     onClickMonitor() {
-      // addMonitor
-      const data = {
-        type: this.monitor,
-        content: this.content,
-        sTime: this.timeValue[0].format('YYYY-MM-DD HH:mm:ss') || '',
-        eTime: this.timeValue[1].format('YYYY-MM-DD HH:mm:ss') || '',
-        duration: this.monitorTime
+      if (this.monitor === 1) {
+        const data = {
+          type: this.monitor,
+          content: this.content,
+          sTime: this.timeValue[0].format('YYYY-MM-DD HH:mm:ss') || '',
+          eTime: this.timeValue[1].format('YYYY-MM-DD HH:mm:ss') || '',
+          duration: this.monitorTime
+        }
+        this.addMonitor({ ...data }).then(() => {
+          // 每次添加初始化列表
+          this.changeList = false
+        })
       }
-      this.addMonitor({ ...data }).then(() => {
-        // 每次添加初始化列表
-        this.changeList = false
-      })
+      if (this.monitor === 2) {
+        // 获取预约监控搜索列表对应名字
+        const target = this.searchInfo.filter(
+          (item, index) => this.isActive === index
+        )[0]
+        const data = {
+          type: this.monitor,
+          content: target.kolId,
+          sTime: this.timeValue[0].format('YYYY-MM-DD HH:mm:ss') || '',
+          eTime: this.timeValue[1].format('YYYY-MM-DD HH:mm:ss') || '',
+          duration: this.monitorTime
+        }
+        this.addMonitor({ ...data }).then(() => {
+          // 每次添加初始化列表
+          this.changeList = false
+        })
+      }
     },
     addMonitor(params) {
       return addMonitor(params).then(res => {
@@ -139,6 +206,12 @@ export default {
         }
       })
     }
+  },
+  computed: {
+    // userinfo
+    ...mapGetters({
+      userInfo: 'userStorage'
+    })
   },
   components: {
     'hsy-monitorList': MonitorList

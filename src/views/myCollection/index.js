@@ -1,4 +1,4 @@
-import { myCollect } from 'api/collection'
+import { myCollect, myCollectDelete } from 'api/collection'
 
 // rank tabs
 export const columns = [
@@ -18,17 +18,23 @@ export const columns = [
     dataIndex: 'createTime'
   },
   {
-    title: '其他操作',
+    title: '查看详情',
     dataIndex: 'kolId',
     scopedSlots: { customRender: 'kolId' }
+  },
+  {
+    title: '其他操作',
+    dataIndex: 'id',
+    scopedSlots: { customRender: 'id' }
   }
 ]
 
 /**
- * @description:
+ * @description:收藏列表
  * @param {type}
  * @return:
  */
+
 export function collectionlist(params) {
   this.loading = true
   return myCollect(params)

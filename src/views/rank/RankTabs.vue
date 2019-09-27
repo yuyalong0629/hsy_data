@@ -4,9 +4,9 @@
       <a-radio-group defaultValue="0" buttonStyle="solid" @change="onChangeRadio">
         <a-radio-button value="0">总榜</a-radio-button>
         <a-radio-button value="1">月涨粉榜</a-radio-button>
-        <a-radio-button value="2">月掉粉榜</a-radio-button>
+        <!-- <a-radio-button value="2">月掉粉榜</a-radio-button> -->
         <a-radio-button value="3">周涨粉榜</a-radio-button>
-        <a-radio-button value="4">周掉粉榜</a-radio-button>
+        <!-- <a-radio-button value="4">周掉粉榜</a-radio-button> -->
       </a-radio-group>
       <a-select
         v-if="dateLists.length"
@@ -18,37 +18,40 @@
       </a-select>
     </div>
     <div class="rank-tab">
-      <hsy-skeleton v-if="getTabData && !getTabData.length" />
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :rowKey="record => record.kolId"
-        :dataSource="getTabData"
-        :pagination="pagination"
-        @change="handleTableChange"
-        v-else
-      >
-        <template slot="cloudsTitle">
-          <a-popover placement="bottomLeft" :title="false">
-            <template slot="content">
-              <p style="width: 200px;">云指数是系统基于账号粉丝活跃度、作品原创度、作品内容质量、作品完播度以及平均评论和点赞量等数据分析得出的综合评分</p>
-            </template>
-            云指数
-            <a-icon type="question-circle" />
-          </a-popover>
-        </template>
-        <template slot="media" slot-scope="text">
-          <img v-lazy="text.kolImg" alt />
-          <p>{{ text.kolName }}</p>
-        </template>
-        <template slot="kolId" slot-scope="text">
-          <router-link
-            tag="a"
-            target="_blank"
-            :to="{ path: '/details', query: { kolId: text } }"
-          >查看详情</router-link>
-        </template>
-      </a-table>
+      <a-spin :spinning="getLoading">
+        <hsy-skeleton v-if="getTabData && !getTabData.length" />
+        <a-table
+          :loading="getLoading"
+          :columns="columns"
+          :rowKey="record => record.kolId"
+          :dataSource="getTabData"
+          :pagination="pagination"
+          @change="handleTableChange"
+          v-else
+        >
+          <template slot="fansTitle">{{ fansTitle }}</template>
+          <template slot="cloudsTitle">
+            <a-popover placement="bottomLeft" :title="false">
+              <template slot="content">
+                <p style="width: 200px;">云指数是系统基于账号粉丝活跃度、作品原创度、作品内容质量、作品完播度以及平均评论和点赞量等数据分析得出的综合评分</p>
+              </template>
+              云指数
+              <a-icon type="question-circle" />
+            </a-popover>
+          </template>
+          <template slot="media" slot-scope="text">
+            <img v-lazy="text.kolImg" alt />
+            <p>{{ text.kolName }}</p>
+          </template>
+          <template slot="kolId" slot-scope="text">
+            <router-link
+              tag="a"
+              target="_blank"
+              :to="{ path: '/details', query: { kolId: text } }"
+            >查看详情</router-link>
+          </template>
+        </a-table>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -64,6 +67,7 @@ export default {
       columns,
       dateValue: undefined,
       timeout: null,
+      fansTitle: '粉丝数',
       pagination: {
         pageSize: 20,
         hideOnSinglePage: true,
@@ -105,22 +109,29 @@ export default {
     onChangeRadio(e) {
       // 清空select初始值
       this.dateValue = undefined
+      // 切换榜单改变title
+      this.fansTitle =
+        e.target.value === '1' || e.target.value === '3'
+          ? '增量粉丝数'
+          : '粉丝数'
       const target = this.params.map(item => ({
         ...item,
-        flag:
-          e.target.value === '1' || e.target.value === '2'
-            ? '2'
-            : e.target.value === '3' || e.target.value === '4'
-            ? '1'
-            : '0',
-        sortord:
-          e.target.value === '1' || e.target.value === '3'
-            ? '2'
-            : e.target.value === '2' || e.target.value === '4'
-            ? '1'
-            : ''
+        flag: e.target.value === '1' ? '2' : e.target.value === '3' ? '1' : '0',
+        sortord: e.target.value === '1' || e.target.value === '3' ? '2' : '',
+        dateNum: 0
+        // flag:
+        //   e.target.value === '1' || e.target.value === '2'
+        //     ? '2'
+        //     : e.target.value === '3' || e.target.value === '4'
+        //     ? '1'
+        //     : '0',
+        // sortord:
+        //   e.target.value === '1' || e.target.value === '3'
+        //     ? '2'
+        //     : e.target.value === '2' || e.target.value === '4'
+        //     ? '1'
+        //     : ''
       }))
-      console.log(target)
       this.$emit('tabParam', ...target)
       this.params = [...target]
     },
@@ -160,6 +171,9 @@ export default {
           }
         })
       }
+    },
+    getLoading() {
+      return this.loading
     }
   },
   watch: {

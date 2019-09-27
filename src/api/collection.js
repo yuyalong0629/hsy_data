@@ -12,7 +12,8 @@ const api = {
   collectGroupList: '/api/user/collectGroupList',
   addCollectGroup: '/api/user/addCollectGroup',
   addCollect: '/api/user/addCollect',
-  myCollect: '/api/user/myCollect'
+  myCollect: '/api/user/myCollect',
+  myCollectDelete: '/api/user/myCollectDelete'
 }
 
 /**
@@ -71,6 +72,21 @@ export function myCollect(parameter) {
   return axios({
     method: 'get',
     url: api.myCollect,
+    params: parameter
+  })
+}
+
+/**
+ * @description: 删除收藏
+ * @param {string} method [请求方式]
+ * @param {object} params [传入参数]
+ * @return: myCollectDelete
+ */
+
+export function myCollectDelete(parameter) {
+  return axios({
+    method: 'get',
+    url: api.myCollectDelete,
     params: parameter
   })
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="permisson" v-if="userInfo && userInfo.userType !== 1">
-    您还不是会员,
-    <router-link to="/buyMembers">立即升级会员版本</router-link>查看更多
+    立即
+    <router-link to="/buyMembers">升级为VIP会员</router-link>&nbsp;查看更多信息
   </div>
 </template>
 

@@ -191,9 +191,11 @@ export default {
               if (res.code === 200) {
                 this.loading = false
                 this.$message.success(res.message)
+                // 注册成功跳转登录
+                this.$emit('jumpUser', 'hsy-login')
               } else {
                 this.loading = false
-                this.$message.success(res.message)
+                this.$message.error(res.message)
                 this.changeImgCode()
               }
             })

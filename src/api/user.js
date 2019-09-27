@@ -18,7 +18,8 @@ const api = {
   verifyOldPhone: '/api/user/verifyOldPhone',
   logout: '/api/logout',
   weixinLogin: '/api/weixinLogin',
-  weixinBinding: '/api/user/weixinBinding'
+  weixinBinding: '/api/user/weixinBinding',
+  setCoverImage: '/api/user/setCoverImage'
 }
 
 /**
@@ -165,6 +166,20 @@ export function updatePhone(parameter) {
   return axios({
     method: 'post',
     url: api.updatePhone,
+    data: qs.stringify(parameter)
+  })
+}
+
+/**
+ * @description: 更新头像
+ * @param {Object} parameter [注册信息]
+ * @return: setCoverImage
+ */
+
+export function setCoverImage(parameter) {
+  return axios({
+    method: 'post',
+    url: api.setCoverImage,
     data: qs.stringify(parameter)
   })
 }

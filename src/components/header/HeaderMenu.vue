@@ -5,17 +5,17 @@
         <router-link tag="span" to="/home">首页</router-link>
       </li>
       <li class="nav-list">
-        <router-link tag="span" to="/rank">排行榜</router-link>
+        <router-link tag="span" to="/monitor">账号监控</router-link>
       </li>
       <li class="nav-list">
-        <router-link tag="span" to="/monitor">账号监控</router-link>
+        <router-link tag="span" to="/rank">排行榜</router-link>
       </li>
       <li class="nav-list">
         <router-link tag="span" to="/search">账号搜索</router-link>
       </li>
-      <li class="nav-list">
+      <!-- <li class="nav-list">
         <router-link tag="span" to="/about">关于我们</router-link>
-      </li>
+      </li>-->
       <li v-if="!hasLogin">
         <div class="logon-btn" @click="handelLogin">登录</div>
         <div class="register-btn" @click="handelRegister">注册</div>
@@ -155,6 +155,7 @@ export default {
     // Modal cancel
     handleCancel() {
       this.visible = false
+      this.$store.commit('loginModal', false)
     },
     // $emit 跳转注册/登录
     jumpUser(val) {
@@ -182,7 +183,7 @@ export default {
       const that = this
       this.$confirm({
         title: '提示',
-        content: '真的要注销登录吗 ?',
+        content: '真的要退出登录吗 ?',
         cancelText: '取消',
         okText: '确定',
         onOk() {
@@ -208,7 +209,15 @@ export default {
     ...mapGetters({
       userInfo: 'userStorage',
       hasLogin: 'hasLogin'
-    })
+    }),
+    loginModal() {
+      return this.$store.state.user.loginModal
+    }
+  },
+  watch: {
+    loginModal(val) {
+      this.visible = val
+    }
   },
   components: {
     'hsy-login': Login,

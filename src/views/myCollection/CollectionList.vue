@@ -15,11 +15,17 @@
     <template slot="kolId" slot-scope="text">
       <router-link :to="{ path: '/details', query: { kolId: text } }">查看详情</router-link>
     </template>
+    <template slot="id" slot-scope="text">
+      <a href="javascript:;" style="padding: 0 12px;">
+        <a-icon type="delete" @click="remove(text)" />
+      </a>
+    </template>
   </a-table>
 </template>
 
 <script>
 import { columns } from './index'
+import { myCollectDelete } from 'api/collection'
 
 export default {
   name: 'CollectionList',
@@ -52,6 +58,35 @@ export default {
     handleTableChange(pagination, filters, sorter) {
       console.log(pagination)
       this.$emit('pageParam', pagination.current)
+    },
+    remove(id) {
+      const that = this
+      this.$confirm({
+        title: '您是否要删除此收藏?',
+        content: '',
+        okText: '确定',
+        cancelText: '取消',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            setTimeout(resolve, 1000)
+          })
+            .then(() => {
+              // 删除收藏
+              myCollectDelete({
+                userCollectKolInfoId: id
+              }).then(res => {
+                if (res.code === 200) {
+                  that.$message.success(res.message)
+                  that.$emit('update', '')
+                } else {
+                  that.$message.error(res.message)
+                }
+              })
+            })
+            .catch(() => console.log('Oops errors!'))
+        },
+        onCancel() {}
+      })
     }
   },
   computed: {

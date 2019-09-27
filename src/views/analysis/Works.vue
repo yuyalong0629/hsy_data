@@ -22,7 +22,7 @@
     </div>
     <a-spin :spinning="spinning">
       <a-card
-        v-if="Object.keys(dayDataMap).length"
+        v-if="Object.keys(kolVideoInfoMap).length"
         hoverable
         style="margin: 20px 0; background: #f1f5f6;"
       >

@@ -26,6 +26,7 @@ import {
   Modal,
   message,
   notification,
+  Upload,
   Popover,
   Pagination,
   Row,
@@ -61,6 +62,7 @@ Vue.use(LocaleProvider)
 Vue.use(Input)
 Vue.use(Menu)
 Vue.use(Modal)
+Vue.use(Upload)
 Vue.use(Popover)
 Vue.use(Pagination)
 Vue.use(Row)

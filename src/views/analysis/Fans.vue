@@ -10,31 +10,40 @@
           <li class="fans-chart-item">
             <h4>性别分布</h4>
             <div class="fans-item">
-              <ve-histogram :data="genderPortrait" :settings="chartSettings" :colors="colors"></ve-histogram>
+              <ve-histogram :data="genderPortrait" :settings="genderSettings" :colors="colors"></ve-histogram>
             </div>
           </li>
           <li class="fans-chart-item">
             <h4>年龄分布</h4>
             <div class="fans-item">
-              <ve-histogram :data="ageDistribution" :settings="chartSettings" :colors="colors"></ve-histogram>
+              <ve-histogram :data="ageDistribution" :settings="ageSettings" :colors="colors"></ve-histogram>
             </div>
           </li>
           <li class="fans-chart-item">
             <h4>星座分布</h4>
             <div class="fans-item">
-              <ve-histogram :data="constellation" :settings="chartSettings" :colors="colors"></ve-histogram>
+              <ve-histogram
+                :data="constellation"
+                :settings="constellationSettings"
+                :colors="colors"
+              ></ve-histogram>
             </div>
           </li>
           <li class="fans-chart-item">
             <h4>等级分布</h4>
             <div class="fans-item">
-              <ve-histogram :data="level" :settings="chartSettings" :colors="colors"></ve-histogram>
+              <ve-histogram :data="level" :settings="levelSettings" :colors="colors"></ve-histogram>
             </div>
           </li>
           <li class="fans-chart-item">
             <h4>地域分布TOP10</h4>
             <div class="fans-item">
-              <ve-funnel :data="provinces" :settings="provincesSettings"></ve-funnel>
+              <ve-histogram
+                :data="provinces"
+                :settings="provincesSettings"
+                :extend="provincesExtend"
+                :colors="colors"
+              ></ve-histogram>
             </div>
           </li>
         </ul>
@@ -46,20 +55,35 @@
 <script>
 import { fansPortrait } from 'api/analysis'
 import VeHistogram from 'v-charts/lib/histogram.common'
-import VeFunnel from 'v-charts/lib/funnel.common'
 import Skeleton from '@/components/skeleton/Skeleton'
 
 export default {
   name: 'Fans',
   data() {
-    // 指标
-    this.chartSettings = {
-      metrics: ['数量']
-    }
-    // 指标
-    this.provincesSettings = {
-      dataType: 'percent',
+    // 性别指标
+    this.genderSettings = {
       metrics: ['比例']
+    }
+    // 年龄指标
+    this.ageSettings = {
+      metrics: ['比例']
+    }
+    // 星座指标
+    this.constellationSettings = {
+      metrics: ['比例']
+    }
+    // 等级指标
+    this.levelSettings = {
+      metrics: ['比例']
+    }
+    // 地域指标
+    this.provincesSettings = {
+      metrics: ['比例']
+    }
+    this.provincesExtend = {
+      series: {
+        label: { show: true, position: 'top' }
+      }
     }
     this.colors = ['#DA5054']
     return {
@@ -67,61 +91,28 @@ export default {
       spinning: false,
       // 性别
       genderPortrait: {
-        columns: ['性别', '数量'],
-        rows: [{ 性别: '女', 数量: 400 }, { 性别: '男', 数量: 110 }]
+        columns: ['性别', '比例'],
+        rows: []
       },
       // 年龄
       ageDistribution: {
-        columns: ['分布', '数量'],
-        rows: [
-          { 分布: '80后', 数量: 20 },
-          { 分布: '85后', 数量: 17 },
-          { 分布: '90后', 数量: 40 },
-          { 分布: '95后', 数量: 30 },
-          { 分布: '00后', 数量: 10 }
-        ]
+        columns: ['年龄', '比例'],
+        rows: []
       },
       // 星座
       constellation: {
-        columns: ['分布', '数量'],
-        rows: [
-          { 分布: '巨蟹', 数量: 20 },
-          { 分布: '射手', 数量: 17 },
-          { 分布: '水瓶', 数量: 40 },
-          { 分布: '双鱼', 数量: 30 },
-          { 分布: '狮子', 数量: 30 },
-          { 分布: '天蝎', 数量: 30 },
-          { 分布: '白羊', 数量: 30 },
-          { 分布: '其他', 数量: 10 }
-        ]
+        columns: ['星座', '比例'],
+        rows: []
       },
       // 等级
       level: {
-        columns: ['等级分布', '数量'],
-        rows: [
-          { 等级分布: 'vip0', 数量: 20 },
-          { 等级分布: 'vip1', 数量: 17 },
-          { 等级分布: 'vip2', 数量: 40 },
-          { 等级分布: 'vip3', 数量: 30 },
-          { 等级分布: 'vip4', 数量: 30 },
-          { 等级分布: 'vip5', 数量: 30 }
-        ]
+        columns: ['VIP等级', '比例'],
+        rows: []
       },
       // 省份
       provinces: {
-        columns: ['省份', '比例'],
-        rows: [
-          { 省份: '云南', 比例: 0.09 },
-          { 省份: '江苏', 比例: 0.09 },
-          { 省份: '黑龙江', 比例: 0.09 },
-          { 省份: '山东', 比例: 0.08 },
-          { 省份: '重庆', 比例: 0.08 },
-          { 省份: '吉林', 比例: 0.07 },
-          { 省份: '河北', 比例: 0.05 },
-          { 省份: '福建', 比例: 0.04 },
-          { 省份: '山西', 比例: 0.04 },
-          { 省份: '湖北', 比例: 0.04 }
-        ]
+        columns: ['地域', '比例'],
+        rows: []
       }
     }
   },
@@ -137,15 +128,24 @@ export default {
           } else {
             this.fansPortraitDataMap = false
             // 性别
-            this.genderPortrait = res.genderPortrait
+            this.genderPortrait.rows = JSON.parse(
+              res.fansPortraitDataMap.genderPortrait
+            )
             // 年龄
-            this.agePortrait = res.agePortrait
+            this.ageDistribution.rows = JSON.parse(
+              res.fansPortraitDataMap.agePortrait
+            )
             // 星座
-            this.constellation = res.constellationPortrait
+            this.constellation.rows = JSON.parse(
+              res.fansPortraitDataMap.constellationPortrait
+            )
             // 等级
-            this.level = res.gradePortrait
-            // 省份
-            this.provinces = res.areaPortrait
+            this.level.rows = JSON.parse(res.fansPortraitDataMap.gradePortrait)
+            // 地域
+            this.provinces.rows = JSON.parse(
+              res.fansPortraitDataMap.areaPortrait
+            )
+            console.log(this.provinces.rows)
           }
         } else {
           this.spinning = false
@@ -157,7 +157,6 @@ export default {
   },
   components: {
     VeHistogram,
-    VeFunnel,
     'hsy-skeleton': Skeleton
   }
 }

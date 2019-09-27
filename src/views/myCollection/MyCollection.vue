@@ -22,6 +22,7 @@
           :tabData="tabData"
           :loading="loading"
           @pageParam="pageParam"
+          @update="update"
         />
       </div>
     </div>
@@ -68,6 +69,12 @@ export default {
     pageParam(val) {
       collectionlist.call(this, {
         themeId: this.themeId,
+        pageNo: val
+      })
+    },
+    update(val) {
+      collectionlist.call(this, {
+        themeId: val,
         pageNo: val
       })
     }

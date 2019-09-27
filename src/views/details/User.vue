@@ -36,7 +36,7 @@
       <a-button-group>
         <a-button @click="handleClickCollection">收藏账号</a-button>
         <a-button @click="handelClickSimilar">相似账号</a-button>
-        <a-button @click="handelClickMonitor">监控下次作品</a-button>
+        <a-button @click="handelClickMonitor(kolInfos.kolName)">监控下次作品</a-button>
         <a-button @click="handelClickAnalysis">
           投前分析
           <img src="../../assets/image/vip.png" alt />
@@ -158,7 +158,8 @@ export default {
     // 收藏账号
     handleClickCollection() {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后添加')
+        // 未登录状态显示登录 Modal
+        this.$store.commit('loginModal', true)
         return
       }
       this.visible = true
@@ -166,7 +167,8 @@ export default {
     // 相似账号
     handelClickSimilar() {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后查看')
+        // 未登录状态显示登录 Modal
+        this.$store.commit('loginModal', true)
         return
       }
       this.$router.push({
@@ -177,19 +179,25 @@ export default {
       })
     },
     // 监控下次作品
-    handelClickMonitor() {
+    handelClickMonitor(name) {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后使用')
+        // 未登录状态显示登录 Modal
+        this.$store.commit('loginModal', true)
         return
       }
       this.$router.push({
-        path: '/monitor'
+        path: '/monitor',
+        query: {
+          kolId: this.$route.query.kolId,
+          name: name
+        }
       })
     },
     // 投前分析
     handelClickAnalysis() {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后使用')
+        // 未登录状态显示登录 Modal
+        this.$store.commit('loginModal', true)
         return
       }
       if (this.userInfo.userType === 1) {

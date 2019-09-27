@@ -30,7 +30,7 @@ export function validateUsername(rule, value, callback) {
  */
 
 export function validatePassword(rule, value, callback) {
-  const regex = /[^0-9a-zA-Z_]/
+  // const regex = /[^0-9a-zA-Z_]/
   if (!value) {
     callback(new Error('密码不能为空'))
     return false
@@ -39,9 +39,9 @@ export function validatePassword(rule, value, callback) {
     callback(new Error('请输入6~18位密码'))
     return false
   }
-  if (regex.test(value)) {
-    callback(new Error('密码不能有特殊字符'))
-    return false
-  }
+  // if (regex.test(value)) {
+  //   callback(new Error('密码不能有特殊字符'))
+  //   return false
+  // }
   callback()
 }

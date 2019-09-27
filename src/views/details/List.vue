@@ -88,17 +88,20 @@ export default {
       }
       this.timeout = setTimeout(() => {
         if (this.searchValue.keyword) {
-          if (this.searchValue.type === '4') {
-            this.defaultComment = true
-          } else {
-            this.defaultComment = false
-          }
-          insearchData.call(this, {
-            kolId: this.$route.query.kolId,
-            pageNo: 0,
-            ...this.searchValue,
-            keyword: encodeURI(encodeURI(this.searchValue.keyword))
-          })
+          insearchData
+            .call(this, {
+              kolId: this.$route.query.kolId,
+              pageNo: 0,
+              ...this.searchValue,
+              keyword: encodeURI(encodeURI(this.searchValue.keyword))
+            })
+            .then(() => {
+              if (this.searchValue.type === '4') {
+                this.defaultComment = true
+              } else {
+                this.defaultComment = false
+              }
+            })
         } else {
           this.$message.warn('关键词不能为空')
         }
@@ -117,17 +120,20 @@ export default {
       }
       this.timeout = setTimeout(() => {
         if (this.searchValue.keyword) {
-          if (this.searchValue.type === '4') {
-            this.defaultComment = true
-          } else {
-            this.defaultComment = false
-          }
-          insearchData.call(this, {
-            kolId: this.$route.query.kolId,
-            pageNo: 0,
-            ...this.searchValue,
-            keyword: encodeURI(encodeURI(this.searchValue.keyword))
-          })
+          insearchData
+            .call(this, {
+              kolId: this.$route.query.kolId,
+              pageNo: 0,
+              ...this.searchValue,
+              keyword: encodeURI(encodeURI(this.searchValue.keyword))
+            })
+            .then(() => {
+              if (this.searchValue.type === '4') {
+                this.defaultComment = true
+              } else {
+                this.defaultComment = false
+              }
+            })
         } else {
           this.$message.warn('关键词不能为空')
         }

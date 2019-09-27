@@ -144,8 +144,10 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
       return
     }
-    message.warning('权限不足,需要登录账号才能查看', 1)
-    next({ path: '/home', query: { redirect: to.fullPath } })
+    // message.warning('权限不足,需要登录账号才能查看', 1)
+    // 未登录状态显示登录 Modal
+    store.commit('loginModal', true)
+    next({ path: from.fullPath, query: { redirect: to.fullPath } })
     NProgress.done()
   } else {
     next()

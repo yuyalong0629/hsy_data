@@ -4,7 +4,7 @@ import router from '../router'
 import store from '../store/index'
 
 const service = axios.create({
-  timeout: 6000 // 请求超时时间
+  timeout: 10000 // 请求超时时间
 })
 
 const err = error => {
@@ -37,7 +37,6 @@ const err = error => {
       router.replace({ path: '/500' })
     }
   }
-  store.commit('logout', false)
   return Promise.reject(error)
 }
 
@@ -51,9 +50,11 @@ service.interceptors.response.use(response => {
   if (response.data.code === 0) {
     setTimeout(() => {
       store.commit('logout', false)
-      // notification.error({
-      //   message: '用户未登录或登录失效'
-      // })
+      // 未登录状态显示登录 Modal
+      store.commit('loginModal', true)
+      notification.error({
+        message: '用户未登录或登录失效'
+      })
       // router.replace({ path: '/home' })
       // resolve()
     }, 1000)

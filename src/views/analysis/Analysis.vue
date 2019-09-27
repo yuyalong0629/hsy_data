@@ -44,10 +44,18 @@ export default {
   },
   mounted() {
     // 初始化历史作品内容
-    this.getVideo({
-      kolId: this.$route.query.kolId,
-      pageNo: 0
-    })
+    if (this.$route.query.type === '1') {
+      this.getVideo({
+        type: this.$route.query.type,
+        videoId: this.$route.query.videoId,
+        pageNo: 0
+      })
+    } else {
+      this.getVideo({
+        kolId: this.$route.query.kolId,
+        pageNo: 0
+      })
+    }
   },
   methods: {
     getVideo(params) {

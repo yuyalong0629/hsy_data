@@ -4,10 +4,6 @@
     <div class="banner">
       <h2 class="banner-h2-title animated bounceInLeft">让天下没有难投的新媒体广告</h2>
       <h3 class="banner-h3-title animated bounceInRight">快速找号、轻松辨号、广告价值分析、投放数据监控，投广告快准稳</h3>
-      <h3
-        class="banner-h3-title"
-        style="color: #da5054; margin-top: 24px;"
-      >平台升级中，更好体验，敬请期待...26号15:00</h3>
       <ul class="banner-img">
         <li v-for="(item, index) of bannerList" :key="index">
           <!-- <img v-lazy="item" alt /> -->

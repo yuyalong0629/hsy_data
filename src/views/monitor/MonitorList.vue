@@ -21,7 +21,9 @@
             <template slot="actions">
               <div class="monitor-list-item">
                 <p>{{ item.monitorStartTime }}</p>
-                <h4>{{ item.monitorType === 1 ? (item.title || item.monitorContent) : item.kolInfoMap.kolName }}</h4>
+                <h4
+                  @click="clickAnalysis(item.monitorStatus, item.monitorType, item.id)"
+                >{{ item.monitorType === 1 ? (item.title || item.monitorContent) : item.kolInfoMap.kolName }}</h4>
                 <p>
                   <a-tag v-for="(item, index) of item.tags" :key="index">{{ item }}</a-tag>
                 </p>
@@ -40,6 +42,7 @@
 <script>
 import { monitorHistoryInfo } from './index'
 import Skeleton from '@/components/skeleton/Skeleton'
+import { types } from 'util'
 
 export default {
   name: 'MonitorList',
@@ -69,10 +72,23 @@ export default {
     // 监控历史
     monitorHistoryInfo.call(this, { pageNo: 0 })
   },
+  methods: {
+    clickAnalysis(status, type, id) {
+      if (type === 1 && (status === 1 || status === 3)) {
+        this.$router.push({
+          path: '/analysis',
+          query: {
+            type: '1',
+            videoId: id
+          }
+        })
+      }
+    }
+  },
   watch: {
     monitorInfo(val) {
       console.log(val)
-      this.pagination.total = val.total
+      this.pagination.total = val.count
     },
     changeList(val) {
       if (val) {

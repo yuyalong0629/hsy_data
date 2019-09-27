@@ -6,8 +6,8 @@
         hoverable
         style="margin: 20px 0;"
         :loading="loading"
-        v-for="item of pages.result"
-        :key="item.id"
+        v-for="(item, index) of pages.result"
+        :key="index"
       >
         <div class="similar-content">
           <div class="similar-content-left">
@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import { similarKolList } from 'api/similar'
 import Collection from '@/components/collection/Collection'
 import { mapGetters } from 'vuex'
 import { light } from 'utils/util'
@@ -132,6 +131,7 @@ export default {
     }
   },
   methods: {
+    // 相似号
     light,
     // 分页
     changePage(page, pageSize) {
@@ -149,15 +149,18 @@ export default {
     // 相似账号
     clickSimilar(id) {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后查看')
+        this.$store.commit('loginModal', true)
         return
       }
-      this.similarKolList({ kolId: id, pageNo: 0 })
+      this.$router.push({
+        path: '/similar',
+        query: { kolId: id }
+      })
     },
     // 投前分析
     clickAnalysis(id) {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后查看')
+        this.$store.commit('loginModal', true)
         return
       }
       this.$router.push({
@@ -168,7 +171,7 @@ export default {
     // 收藏账号
     clickCollention(id) {
       if (!this.hasLogin) {
-        this.$message.warn('您当前未登录,请登录后添加')
+        this.$store.commit('loginModal', true)
         return
       }
       this.visible = true
@@ -189,7 +192,7 @@ export default {
   watch: {
     pages(val) {
       if (val) {
-        this.total = val.total
+        this.total = val.count
         this.current = val.index === 0 ? 1 : val.index
       }
     }

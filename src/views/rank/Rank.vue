@@ -56,9 +56,9 @@ export default {
   methods: {
     // get request
     getRankList(params) {
+      this.loading = true
       return ranklist(params)
         .then(res => {
-          this.loading = true
           if (res.code === 200) {
             // 支持平台信息
             this.platformInfos = res.platformInfos || []

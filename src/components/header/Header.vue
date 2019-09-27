@@ -2,10 +2,10 @@
   <div class="header">
     <header class="header-wrapper">
       <a-row class="header-nav">
-        <a-col :span="4">
+        <a-col :span="6">
           <Logo />
         </a-col>
-        <a-col :span="16" :offset="4">
+        <a-col :span="14" :offset="4">
           <HeaderMenu />
         </a-col>
       </a-row>

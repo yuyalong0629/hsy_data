@@ -6,15 +6,14 @@
         <p>申请发票</p>
       </div>
       <div class="members-user">
-        <a-avatar v-if="!userInfo.userImage" :size="64" icon="user" />
-        <a-avatar v-if="userInfo.userImage" :size="64" :src="userInfo.userImage" />
+        <hsy-upload :userImage="userInfo.userImage" @propsFileList="propsFileList" />
         <div class="members-user-phone">
           <p>
             <span>{{ userInfo.nickname || userInfo.phone }}</span>
             <span>{{ userInfo.userType === 1 ? 'VIP会员' : '免费版' }}</span>
           </p>
           <p>
-            <span v-if="userInfo.userType === 1">会员到期时间：{{ userInfo.maturityTime }}</span>
+            <span v-if="userInfo.userType === 1">会员到期时间：{{ overTime.maturityTime }}</span>
             <span></span>
           </p>
         </div>
@@ -23,11 +22,11 @@
       <div class="members-phone">
         <div class="members-phone-left">
           <p>{{ `手机号码:&nbsp;&nbsp;${userInfo.phone}` }}</p>
-          <p>{{ `微信昵称:&nbsp;&nbsp;${userInfo.nickname}` }}</p>
+          <p>{{ `微信昵称:&nbsp;&nbsp;${thirdAccountInfo && thirdAccountInfo.nickname}` }}</p>
         </div>
         <div class="members-phone-right">
-          <a href="javascript:;" @click="onChangePhone">更换号码</a>
-          <a href="javascript:;" @click="onChangeWechart">绑定微信</a>
+          <a href="javascript:;" @click="onChangePhone">{{ isOldPassword ? '更换号码' :'绑定号码' }}</a>
+          <a href="javascript:;" @click="onChangeWechart">{{ !thirdAccountInfo ? '绑定微信' : '更换微信' }}</a>
         </div>
       </div>
       <a-divider />
@@ -56,6 +55,8 @@ import { columns, data } from './index'
 import { mapGetters } from 'vuex'
 import Phone from './Phone'
 import Wechart from './Wechart'
+import { userInfo, setCoverImage } from 'api/user'
+import Upload from '@/components/upload/Upload'
 
 export default {
   name: 'Members',
@@ -64,10 +65,37 @@ export default {
       columns,
       data,
       visible: false,
-      userTemplate: undefined
+      userTemplate: undefined,
+      isOldPassword: false,
+      thirdAccountInfo: '',
+      overTime: ''
     }
   },
+  mounted() {
+    // 初始化用户信息
+    userInfo().then(res => {
+      if (res.code === 200) {
+        // 是否已绑定手机号
+        this.isOldPassword = res.isOldPassword || false
+        this.thirdAccountInfo = res.thirdAccountInfo || ''
+        this.overTime = res.maturityTime || ''
+      }
+    })
+  },
   methods: {
+    // upload
+    propsFileList(val) {
+      setCoverImage({
+        imageUrl: val
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message.success(res.message)
+          this.$store.commit('login', res.userInfoMap)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     // Modal cancel
     handleCancel() {
       this.visible = false
@@ -84,13 +112,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      userInfo: 'userStorage'
-    })
+    userInfo() {
+      const userInfo = this.$store.getters.userStorage
+      if (userInfo) {
+        return userInfo
+      } else {
+        return {}
+      }
+    }
   },
   components: {
     'hsy-phone': Phone,
-    'hsy-wechart': Wechart
+    'hsy-wechart': Wechart,
+    'hsy-upload': Upload
   }
 }
 </script>

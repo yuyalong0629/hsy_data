@@ -108,7 +108,7 @@ export default {
     pages(val) {
       if (val) {
         console.log(val)
-        this.total = val.total
+        this.total = val.count
         this.current = val.index === 0 ? 1 : val.index
       }
     }

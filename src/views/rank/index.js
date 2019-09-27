@@ -13,7 +13,8 @@ export const columns = [
     width: 320
   },
   {
-    title: '粉丝数',
+    // title: '粉丝数',
+    slots: { title: 'fansTitle' },
     dataIndex: 'fansNum'
   },
   {
