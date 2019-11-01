@@ -6,7 +6,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: './',
+  publicPath: '/',
   productionSourceMap: false,
   chainWebpack: config => {
     config.resolve.alias
@@ -40,7 +40,7 @@ module.exports = {
       '/api': {
         target: 'http://hsyapi.hsydata.com',
         // target: 'http://192.168.0.106:8089',
-        // target: 'http://192.168.0.51:8089',
+        // target: 'http://192.168.0.85:8089',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

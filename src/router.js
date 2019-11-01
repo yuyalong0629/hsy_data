@@ -60,13 +60,34 @@ const router = new Router({
         {
           path: '/search',
           name: 'search',
+          meta: { hidden: true },
           component: () => import('./views/search/Search.vue')
+        },
+        // 内容查询
+        {
+          path: '/contentquery',
+          name: 'contentquery',
+          meta: { hidden: true },
+          component: () => import('./views/contentQuery/ContentQuery.vue')
         },
         // 关于我们
         {
-          path: '/about',
-          name: 'about',
-          component: () => import('./views/about/About.vue')
+          path: '/mine',
+          component: () => import('./views/mine/Mine.vue'),
+          children: [
+            {
+              path: '/',
+              redirect: '/mine/list'
+            },
+            {
+              path: '/mine/list',
+              component: () => import('./components/classroom/List.vue')
+            },
+            {
+              path: '/mine/detail',
+              component: () => import('./components/classroom/Detail.vue')
+            }
+          ]
         },
         // 会员中心
         {

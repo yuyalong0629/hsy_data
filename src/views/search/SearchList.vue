@@ -17,7 +17,8 @@
                 <div class="similar-userinfo">
                   <div class="similar-userinfo-title">
                     <router-link
-                      tag="span"
+                      tag="a"
+                      target="_blank"
                       :to="{path: '/details', query: {kolId: item.kolId}}"
                       v-html="item && light(item.kolName, pages.keyword)"
                     ></router-link>
@@ -136,7 +137,12 @@ export default {
     // 分页
     changePage(page, pageSize) {
       this.current = page
-      this.$emit('pageNo', page)
+      this.$emit('pageNo', page - 1)
+      // 锚点定位
+      const anchor = document.querySelector('.similar')
+      if (anchor) {
+        anchor.scrollIntoView(true)
+      }
     },
     // 查看详情
     clickDetail(id) {
@@ -190,11 +196,15 @@ export default {
     })
   },
   watch: {
-    pages(val) {
-      if (val) {
-        this.total = val.count
-        this.current = val.index === 0 ? 1 : val.index
-      }
+    pages: {
+      handler(val) {
+        if (val) {
+          this.total = val.count
+          this.current = val.index === 0 ? 1 : +val.index + 1
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   components: {
@@ -236,6 +246,11 @@ export default {
               .similar-userinfo-title {
                 height: 30px;
                 line-height: 30px;
+                a {
+                  color: #000;
+                  font-weight: 700;
+                  font-size: 15px;
+                }
                 span:nth-child(1) {
                   font-weight: 700;
                   font-size: 16px;

@@ -19,7 +19,10 @@ const api = {
   logout: '/api/logout',
   weixinLogin: '/api/weixinLogin',
   weixinBinding: '/api/user/weixinBinding',
-  setCoverImage: '/api/user/setCoverImage'
+  setCoverImage: '/api/user/setCoverImage',
+  forgetpwd: '/api/forgetpwd',
+  updatepwd: '/api/user/updatepwd',
+  getWeiXinQRCode: '/api/getWeiXinQRCode'
 }
 
 /**
@@ -181,5 +184,47 @@ export function setCoverImage(parameter) {
     method: 'post',
     url: api.setCoverImage,
     data: qs.stringify(parameter)
+  })
+}
+
+/**
+ * @description: 忘记密码
+ * @param {Object} parameter [注册信息]
+ * @return: forgetpwd
+ */
+
+export function forgetpwd(parameter) {
+  return axios({
+    method: 'post',
+    url: api.forgetpwd,
+    data: qs.stringify(parameter)
+  })
+}
+
+/**
+ * @description: 修改密码
+ * @param {Object} parameter [注册信息]
+ * @return: updatepwd
+ */
+
+export function updatepwd(parameter) {
+  return axios({
+    method: 'post',
+    url: api.updatepwd,
+    data: qs.stringify(parameter)
+  })
+}
+
+/**
+ * @description: 用户关注二维码
+ * @param {type} null
+ * @return: getWeiXinQRCode
+ */
+
+export function getWeiXinQRCode(parameter) {
+  return axios({
+    method: 'get',
+    url: api.getWeiXinQRCode,
+    params: parameter
   })
 }

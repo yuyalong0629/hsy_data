@@ -9,7 +9,9 @@ import { axios } from 'utils/request.js'
  */
 
 const api = {
-  pkData: '/api/pkData'
+  pkData: '/api/index',
+  newsContentInfoList: '/api/newsContentInfoList',
+  newsContentInfoDetail: '/api/newsContentInfoDetail'
 }
 
 /**
@@ -23,6 +25,36 @@ export function pkData(parameter) {
   return axios({
     method: 'get',
     url: api.pkData,
+    params: parameter
+  })
+}
+
+/**
+ * @description: 火烧云课堂
+ * @param {string} method [请求方式]
+ * @param {object} params [传入参数]
+ * @return: newsContentInfoList
+ */
+
+export function newsContentInfoList(parameter) {
+  return axios({
+    method: 'get',
+    url: api.newsContentInfoList,
+    params: parameter
+  })
+}
+
+/**
+ * @description: 火烧云课堂详情
+ * @param {string} method [请求方式]
+ * @param {object} params [传入参数]
+ * @return: newsContentInfoDetail
+ */
+
+export function newsContentInfoDetail(parameter) {
+  return axios({
+    method: 'get',
+    url: api.newsContentInfoDetail,
     params: parameter
   })
 }

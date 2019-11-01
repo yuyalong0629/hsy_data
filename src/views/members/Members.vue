@@ -12,12 +12,15 @@
             <span>{{ userInfo.nickname || userInfo.phone }}</span>
             <span>{{ userInfo.userType === 1 ? 'VIP会员' : '免费版' }}</span>
           </p>
-          <p>
-            <span v-if="userInfo.userType === 1">会员到期时间：{{ overTime.maturityTime }}</span>
+          <p v-if="userInfo.userType === 1 && overTime">
+            <span>会员到期时间：{{ overTime.maturityTime }}</span>
             <span></span>
           </p>
         </div>
       </div>
+      <p style="float: right; margin-bottom: 12px;">
+        <a href="javascript:;" @click="changePwd">修改密码</a>
+      </p>
       <a-divider />
       <div class="members-phone">
         <div class="members-phone-left">
@@ -55,6 +58,7 @@ import { columns, data } from './index'
 import { mapGetters } from 'vuex'
 import Phone from './Phone'
 import Wechart from './Wechart'
+import Retrieve from '@/views/user/Retrieve'
 import { userInfo, setCoverImage } from 'api/user'
 import Upload from '@/components/upload/Upload'
 
@@ -109,6 +113,11 @@ export default {
     onChangeWechart() {
       this.visible = true
       this.userTemplate = 'hsy-wechart'
+    },
+    // 修改密码
+    changePwd() {
+      this.visible = true
+      this.userTemplate = 'hsy-retrieve'
     }
   },
   computed: {
@@ -124,6 +133,7 @@ export default {
   components: {
     'hsy-phone': Phone,
     'hsy-wechart': Wechart,
+    'hsy-retrieve': Retrieve,
     'hsy-upload': Upload
   }
 }

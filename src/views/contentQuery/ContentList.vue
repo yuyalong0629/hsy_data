@@ -27,32 +27,51 @@
               </div>
               <div class="similar-label">
                 <a-tag
-                  v-for="item of item.tags"
+                  v-for="item of JSON.parse(item.tags)"
                   :key="item.id"
                   v-html="item && light(item, pages.keyword)"
                 ></a-tag>
               </div>
               <div class="similar-time">
-                <p>发布时间:&nbsp;{{ item.publishTime }}</p>
-                <span style="margin: 0 12px 0 20px">
-                  <a-icon type="youtube" />
-                  {{item.playNum}}
-                </span>
-                <span style="margin-right: 12px">
-                  <a-icon type="like-o" />
-                  {{item.collectNum}}
-                </span>
+                <p>发布时间:&nbsp;{{ item.publishTime | formatDate }}</p>
+                <p>
+                  <span style="margin: 0 12px 0 20px; font-weight: bold;">
+                    <a-icon type="youtube" />
+                    {{item.playNum}}
+                  </span>
+                  <span style="margin-right: 12px">
+                    <a-icon type="like-o" />
+                    {{item.praiseNum}}
+                  </span>
+                </p>
               </div>
             </div>
             <div class="similar-content-left-fans">
-              <p>评论:&nbsp;&nbsp;{{ item.comments && item.comments[0] }}</p>
+              <p>
+                评论:
+                <span
+                  v-html="item.commentContent && light(item.commentContent.ct ? item.commentContent.ct : item.commentContent, pages.keyword)"
+                ></span>
+              </p>
+              <!-- <p>
+                评论时间：
+                <span>{{ item.commentContent && item.commentContent.pt }}</span>
+              </p>-->
             </div>
           </div>
           <div class="similar-content-right">
-            <router-link :to="{path: '/details', query: {kolId: item.kolId}}">
+            <router-link
+              tag="a"
+              target="_blank"
+              :to="{path: '/details', query: {kolId: item.kolId}}"
+            >
               <img :src="item.kolImg" alt />
             </router-link>
             <span>{{ item.kolName }}</span>
+            <span>
+              粉丝数:
+              <i>{{ item.fansNum }}</i>
+            </span>
           </div>
         </div>
       </a-card>
@@ -71,6 +90,7 @@
 
 <script>
 import { light } from 'utils/util'
+import moment from 'moment'
 
 export default {
   name: 'ContentList',
@@ -78,7 +98,8 @@ export default {
     return {
       count: 0,
       total: 0,
-      current: 1
+      current: 1,
+      pageInfo: []
     }
   },
   props: {
@@ -101,16 +122,24 @@ export default {
     // 分页
     changePage(page, pageSize) {
       this.current = page
-      this.$emit('pageNo', page)
+      this.$emit('pageNo', page - 1)
+      // 锚点定位
+      const anchor = document.querySelector('.similar')
+      if (anchor) {
+        anchor.scrollIntoView(true)
+      }
     }
   },
   watch: {
-    pages(val) {
-      if (val) {
-        console.log(val)
-        this.total = val.count
-        this.current = val.index === 0 ? 1 : val.index
-      }
+    pages: {
+      handler(val) {
+        if (val) {
+          this.total = val.count
+          this.current = val.index === 0 ? 1 : +val.index + 1
+        }
+      },
+      immediate: true,
+      deep: true
     }
   }
 }
@@ -145,8 +174,9 @@ export default {
               justify-content: center;
               margin-left: 0px;
               .similar-userinfo-title {
-                height: 30px;
-                line-height: 30px;
+                height: auto;
+                line-height: 22px;
+                margin-bottom: 6px;
                 span {
                   font-weight: 700;
                   font-size: 16px;
@@ -183,7 +213,7 @@ export default {
           }
           .similar-time {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             padding-right: 12px;
             color: #999;
           }
@@ -192,8 +222,16 @@ export default {
           margin-top: 10px;
           padding: 10px 20px 0 0;
           border-top: 1px solid #d9d9d9;
+          display: flex;
+          justify-content: space-between;
           p {
             line-height: 24px;
+            flex: 3;
+            // .ellipisisClamp();
+          }
+          p:last-child {
+            flex: 1;
+            text-align: left;
           }
         }
       }

@@ -6,8 +6,8 @@
     <a-spin :spinning="spinning">
       <div class="list-statistics-radio" :style="{ margin: '20px 0 10px' }">
         <a-radio-group defaultValue="0" size="small" @change="onChangeRadio">
-          <a-radio-button value="0">周榜</a-radio-button>
-          <a-radio-button value="1">月榜</a-radio-button>
+          <a-radio-button value="0">周增量</a-radio-button>
+          <a-radio-button value="1">月增量</a-radio-button>
         </a-radio-group>
       </div>
       <div class="list-statistics-content">

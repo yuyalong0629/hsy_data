@@ -36,7 +36,7 @@
             <a-popover placement="bottom">
               <template slot="content">
                 <p
-                  style="width: 360px; line-height: 24px;"
+                  style="width: 360px; line-height: 24px; word-break:break-all;"
                   v-html="listData.keyword ? light(item.summary, listData.keyword) : item.summary"
                 >{{item.summary}}</p>
               </template>
@@ -48,13 +48,13 @@
             <!-- icon -->
             <a-tag
               class="list-info-tag"
-              v-for="(cItem, index) in item.tags"
+              v-for="(cItem, index) in JSON.parse(item.tags)"
               :key="index"
               v-html="listData.keyword ? light(cItem, listData.keyword) : cItem"
             >{{ cItem }}</a-tag>
           </div>
           <div class="list-info-actions">
-            <p class="list-info-time">{{`发布时间：${item.publishTime}`}}</p>
+            <p class="list-info-time">发布时间：{{ item.publishTime | formatDate }}</p>
             <div class="list-info-actions-icon">
               <span style="margin-right: 12px">
                 <a-icon type="youtube" />
@@ -69,7 +69,7 @@
                 {{item.collectNum}}
               </span>
               <span
-                @click="handleComment(item.comments, listData.keyword)"
+                @click="handleComment(item.commentContent, listData.keyword)"
                 style="margin-right: 12px; cursor: pointer;"
               >
                 <a-icon type="message" style="color: #DA5054" />
@@ -108,13 +108,13 @@ export default {
           this.pagination.current = page
           if (this.listData.isSearch) {
             // 号内搜
-            this.$emit('pageNo', page)
+            this.$emit('pageNo', page - 1)
             return
           }
           // 历史作品内容分页请求
           getDetails.call(this, {
             kolId: this.$route.query.kolId,
-            pageNo: page
+            pageNo: page - 1
           })
         },
         pageSize: 10,
@@ -142,14 +142,14 @@ export default {
     this.pagination.current =
       this.listData.index === 0 || this.listData.index === undefined
         ? 1
-        : this.listData.index
+        : this.listData.index + 1
   },
   methods: {
     light,
     // 评论
     handleComment(info, keyword) {
       this.visible = true
-      this.comment = { data: info, keyword: keyword }
+      this.comment = { data: JSON.parse(info), keyword: keyword }
     },
     // Modal cencel
     handleCancel(e) {
@@ -181,7 +181,7 @@ export default {
         this.pagination.current =
           this.listData.index === 0 || this.listData.index === undefined
             ? 1
-            : this.listData.index
+            : this.listData.index + 1
       })
     },
     defaultComment: {
@@ -189,7 +189,7 @@ export default {
         if (val) {
           // 搜评论默认展示第一条信息评论
           this.comment = {
-            data: this.listData.result[0].comments,
+            data: JSON.parse(this.listData.result[0].commentContent),
             keyword: this.listData.keyword
           }
           this.visible = val

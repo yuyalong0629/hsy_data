@@ -38,6 +38,7 @@
           <a-range-picker
             showTime
             :value="timeValue"
+            :disabledDate="disabledDate"
             format="YYYY-MM-DD HH:mm:ss"
             style="width: 420px;"
             @change="onChangeDate"
@@ -48,11 +49,11 @@
         <p class="monitor-time">监控时长</p>
         <a-radio-group @change="onChangeMonitorTime" v-model="monitorTime">
           <a-radio :value="24">24小时</a-radio>
-          <a-radio :value="48" v-if="userInfo.userType === 0 && (this.monitor === 1)">48小时</a-radio>
           <a-radio
-            :value="72"
-            v-if="userInfo.userType === 0 && (this.monitor === 1 && this.monitor === 2)"
-          >72小时</a-radio>
+            :value="48"
+            v-if="userInfo.userType === 1 && (this.monitor === 1 || this.monitor === 2)"
+          >48小时</a-radio>
+          <a-radio :value="72" v-if="userInfo.userType === 1 && (this.monitor === 2 )">72小时</a-radio>
         </a-radio-group>
         <div class="monitor-start">
           <a-button type="primary" size="large" @click="onClickMonitor">开始监测</a-button>
@@ -103,6 +104,10 @@ export default {
     }
   },
   methods: {
+    disabledDate(current) {
+      // Can not select days before today and today
+      return current && current < moment().startOf('day')
+    },
     // 监控 radio
     onChangeMonitor(e) {
       this.monitor = e.target.value

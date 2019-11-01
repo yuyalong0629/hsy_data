@@ -2,7 +2,8 @@ const user = {
   state: {
     userInfo: null,
     hasLogin: false,
-    loginModal: false
+    loginModal: false,
+    registerModal: false
   },
   getters: {
     userStorage(state) {
@@ -34,6 +35,9 @@ const user = {
     },
     loginModal(state, status) {
       state.loginModal = status
+    },
+    registerModal(state, status) {
+      state.registerModal = status
     }
   },
   actions: {}

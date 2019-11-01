@@ -29,9 +29,14 @@
                 </p>
               </div>
             </template>
-            <a-button
-              slot="extra"
-            >{{ item.monitorStatus === 1 ? '监控中' : (item.monitorStatus === 2 ? '监控失败' : '监控完成') }}</a-button>
+            <a-tooltip slot="extra" placement="bottom">
+              <template v-if="item.monitorStatus === 2" slot="title">
+                <span>{{ item.remark }}</span>
+              </template>
+              <a-button
+                @click="item.monitorStatus === 3 && clickAnalysis(item.monitorStatus, item.monitorType, item.id)"
+              >{{ item.monitorStatus === 1 ? '监控中' : (item.monitorStatus === 2 ? '监控失败' : (item.monitorStatus === 0 ? '等待监控' : '监控完成')) }}</a-button>
+            </a-tooltip>
           </a-list-item>
         </a-list>
       </div>

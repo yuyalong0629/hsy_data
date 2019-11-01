@@ -10,6 +10,7 @@ import {
   Button,
   BackTop,
   Badge,
+  Breadcrumb,
   Col,
   Card,
   Comment,
@@ -47,6 +48,7 @@ Vue.use(Avatar)
 Vue.use(BackTop)
 Vue.use(Badge)
 Vue.use(Button)
+Vue.use(Breadcrumb)
 Vue.use(Col)
 Vue.use(Card)
 Vue.use(Comment)
@@ -78,6 +80,7 @@ Vue.use(TimePicker)
 
 Vue.prototype.$message = message
 Vue.prototype.$confirm = Modal.confirm
+Vue.prototype.$warning = Modal.warning
 Vue.prototype.$notification = notification
 
 new Vue({

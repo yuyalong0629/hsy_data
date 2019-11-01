@@ -116,9 +116,15 @@ export default {
       }
     }
   },
+  props: {
+    kolId: {
+      type: Number,
+      required: true
+    }
+  },
   mounted() {
     this.spinning = true
-    fansPortrait({ kolId: this.$route.query.kolId })
+    fansPortrait({ kolId: this.kolId })
       .then(res => {
         if (res.code === 200) {
           this.spinning = false

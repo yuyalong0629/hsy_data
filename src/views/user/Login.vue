@@ -6,12 +6,12 @@
       @change="changeTab"
       :tabBarStyle="{'text-align': 'center'}"
     >
-      <!-- <a-tab-pane key="1">
+      <a-tab-pane key="1">
         <span slot="tab">
           <icon-font type="icon-weixin" />扫码登录
         </span>
         <div id="login_container"></div>
-      </a-tab-pane>-->
+      </a-tab-pane>
       <a-tab-pane key="2">
         <span slot="tab">
           <icon-font type="icon-dengluren" />账号登录
@@ -50,9 +50,10 @@
             </a-input>
           </a-form-item>
           <a-form-item>
+            <a href="javascript:;" @click="handelForgot">忘记密码?</a>
             <span class="login-form-forgot">
               尚未注册?
-              <a href="#" @click="handelRegister">立即注册</a>
+              <a href="javascript:;" @click="handelRegister">立即注册</a>
             </span>
             <a-button
               size="large"
@@ -83,7 +84,7 @@ export default {
   mixins: [mixinBasic],
   data() {
     return {
-      activeKey: '2',
+      activeKey: '1',
       form: this.$form.createForm(this)
     }
   },
@@ -109,6 +110,10 @@ export default {
     // 跳转注册
     handelRegister() {
       this.$emit('jumpUser', 'hsy-register')
+    },
+    // 忘记密码
+    handelForgot() {
+      this.$emit('jumpUser', 'hsy-forgot')
     },
     // 提交
     handleSubmit(e) {

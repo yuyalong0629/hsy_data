@@ -134,13 +134,12 @@ export default {
       return similarKolList(params)
         .then(res => {
           if (res.code === 200) {
-            this.count = res.count
+            this.count = res.page.count
             this.data = res.page.result
             this.loading = false
             this.spinning = false
             this.total = res.page.count
-            this.current =
-              res.page.index === 0 || res.page.index === 1 ? 1 : res.page.index
+            this.current = res.page.index === 0 ? 1 : res.page.index + 1
           } else {
             this.spinning = false
           }
@@ -153,7 +152,12 @@ export default {
     changePage(page, pageSize) {
       console.log(page)
       this.current = page
-      this.similarKolList({ kolId: this.$route.query.kolId, pageNo: page })
+      this.similarKolList({ kolId: this.$route.query.kolId, pageNo: page - 1 })
+      // 锚点定位
+      const anchor = document.querySelector('.similar')
+      if (anchor) {
+        anchor.scrollIntoView(true)
+      }
     },
     // 查看详情
     clickDetail(id) {
@@ -165,17 +169,25 @@ export default {
     },
     // 相似账号
     clickSimilar(id) {
+      // 替换路由 ID
+      this.$router.push({
+        query: {
+          kolId: id
+        }
+      })
+
       this.similarKolList({ kolId: id, pageNo: 0 })
     },
     // 投前分析
     handelClickAnalysis(id) {
       if (this.userInfo.userType === 1) {
-        this.$router.push({
+        const { href } = this.$router.resolve({
           path: '/analysis',
           query: {
             kolId: id
           }
         })
+        window.open(href, '_blank')
       } else {
         this.$message.warn('您还不是会员,无法使用此功能')
       }

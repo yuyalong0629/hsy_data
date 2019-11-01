@@ -5,17 +5,17 @@
         <router-link tag="span" to="/home">首页</router-link>
       </li>
       <li class="nav-list">
+        <router-link tag="span" to="/rank">排行榜</router-link>
+      </li>
+      <li class="nav-list">
         <router-link tag="span" to="/search">账号搜索</router-link>
       </li>
       <li class="nav-list">
-        <router-link tag="span" to="/rank">排行榜</router-link>
+        <router-link tag="span" to="/contentquery">全B站搜索</router-link>
       </li>
       <li class="nav-list">
         <router-link tag="span" to="/monitor">账号监控</router-link>
       </li>
-      <!-- <li class="nav-list">
-        <router-link tag="span" to="/about">关于我们</router-link>
-      </li>-->
       <li v-if="!hasLogin">
         <div class="logon-btn" @click="handelLogin">登录</div>
         <div class="register-btn" @click="handelRegister">注册</div>
@@ -69,7 +69,13 @@
       @cancel="handleCancel"
       :footer="null"
     >
-      <component :is="userTemplate" @visibled="visibled" @jumpUser="jumpUser"></component>
+      <component
+        :is="userTemplate"
+        @visibled="visibled"
+        :taId="taId"
+        :userState="userState"
+        @jumpUser="jumpUser"
+      ></component>
       <a-divider dashed />
       <h3 class="h3-title">欢迎使用火烧云数据</h3>
     </a-modal>
@@ -79,6 +85,9 @@
 <script>
 import Login from '@/views/user/Login'
 import Register from '@/views/user/Register'
+import Forgot from '@/views/user/Forgot'
+import Bind from '@/views/user/Bind'
+import Attention from '@/views/user/Attention'
 import { mixinBasic } from '@/utils/mixin.js'
 import { mapGetters } from 'vuex'
 import { logout, weixinLogin, weixinBinding } from 'api/user'
@@ -88,10 +97,13 @@ export default {
   data() {
     return {
       userTemplate: 'hsy-login',
-      droptype: 'caret-down'
+      droptype: 'caret-down',
+      taId: '',
+      userState: true
     }
   },
-  mounted() {
+  created() {
+    // 判断url是否存在code，存在则微信登录
     if (this.$route.query.code) {
       const state = this.$route.query.state
       // 微信绑定
@@ -99,21 +111,50 @@ export default {
         this.wxBind({
           id: this.$route.query.state,
           code: this.$route.query.code
+        }).then(() => {
+          setTimeout(() => {
+            // 关注公众号
+            const attention = this.$ls.get('attention')
+            if (attention !== null && attention === false) {
+              this.visible = true
+              this.userTemplate = 'hsy-attention'
+            }
+          }, 1500)
         })
         return
       }
       // 判断是否微信登录
-      this.wxlogin({ code: this.$route.query.code })
+      this.wxlogin({ code: this.$route.query.code }).then(() => {
+        setTimeout(() => {
+          // 关注公众号
+          const attention = this.$ls.get('attention')
+          if (attention !== null && attention === false) {
+            this.visible = true
+            this.userTemplate = 'hsy-attention'
+          }
+        }, 1500)
+      })
     }
   },
+
   methods: {
     // 微信扫码登录
-    wxlogin(params) {
+    async wxlogin(params) {
       return weixinLogin(params).then(res => {
         if (res.code === 200) {
-          console.log(res)
-          this.$message.success(res.message)
-          this.$store.commit('login', res.userInfoMap)
+          // 弹出二维码 功能
+          this.$ls.set('attention', res.isSubscribe)
+          this.$ls.set('imgUrl', res.imgUrl)
+          if (res.isBindingUser) {
+            this.$message.success(res.message)
+            this.$store.commit('login', res.userInfoMap)
+          } else {
+            // 绑定账号
+            this.taId = res.taId
+            this.visible = true
+            this.userTemplate = 'hsy-bind'
+            this.userState = res.userInfoMap
+          }
           this.splitCodeUrl()
         } else {
           this.$message.error(res.message)
@@ -156,6 +197,9 @@ export default {
     handleCancel() {
       this.visible = false
       this.$store.commit('loginModal', false)
+      this.$store.commit('registerModal', false)
+      this.$ls.remove('attention')
+      this.$ls.remove('imgUrl')
     },
     // $emit 跳转注册/登录
     jumpUser(val) {
@@ -212,16 +256,29 @@ export default {
     }),
     loginModal() {
       return this.$store.state.user.loginModal
+    },
+    registerModal() {
+      return this.$store.state.user.registerModal
     }
   },
   watch: {
     loginModal(val) {
       this.visible = val
+    },
+    registerModal(val) {
+      if (val) {
+        this.userTemplate = 'hsy-register'
+      } else {
+        this.userTemplate = 'hsy-login'
+      }
     }
   },
   components: {
     'hsy-login': Login,
-    'hsy-register': Register
+    'hsy-register': Register,
+    'hsy-forgot': Forgot,
+    'hsy-bind': Bind,
+    'hsy-attention': Attention
   }
 }
 </script>
@@ -282,17 +339,17 @@ export default {
         flex: 1;
         flex-direction: column;
         justify-content: center;
-        width: 80px;
-        // height: 80px;
+        align-items: center;
+        max-width: 100px;
+        margin-right: 4px;
         .user-phone {
-          display: flex;
-          justify-content: center;
-          align-items: center;
           flex: 1;
+          max-width: 100px;
           height: 20px;
           line-height: 20px;
           margin: 0 2px;
           font-size: 12px;
+          .ellipsis();
         }
         .user-vip {
           display: flex;

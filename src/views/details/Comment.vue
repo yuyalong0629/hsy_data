@@ -15,11 +15,11 @@
           <p class="comment-num">
             <span style="margin-right: 12px">
               <a-icon type="like-o" />
-              {{item.cn}}
+              {{item.pn}}
             </span>
             <span style="margin-right: 12px;">
               <a-icon type="message" />
-              {{item.pn}}
+              {{item.cn}}
             </span>
           </p>
         </a-comment>

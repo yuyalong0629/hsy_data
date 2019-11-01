@@ -16,12 +16,11 @@
             slot="addonBefore"
             :value="searchValue.type"
             @change="changeLabel"
-            style="width: 90px"
+            style="width: 120px"
           >
-            <a-select-option value="1">标签</a-select-option>
-            <a-select-option value="2">简介</a-select-option>
-            <a-select-option value="3">标题</a-select-option>
-            <a-select-option value="4">评论</a-select-option>
+            <a-select-option value="1">标题 + 简介</a-select-option>
+            <a-select-option value="2">标签 + 评论</a-select-option>
+            <a-select-option value="3">评论</a-select-option>
           </a-select>
           <a-icon slot="addonAfter" @click="search" type="search" />
         </a-input>
@@ -42,6 +41,7 @@
 import ListContent from './ListContent'
 import ListStatistics from './ListStatistics'
 import { getDetails, insearchData } from './index'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'List',
@@ -96,7 +96,7 @@ export default {
               keyword: encodeURI(encodeURI(this.searchValue.keyword))
             })
             .then(() => {
-              if (this.searchValue.type === '4') {
+              if (this.searchValue.type === '3') {
                 this.defaultComment = true
               } else {
                 this.defaultComment = false
@@ -120,6 +120,26 @@ export default {
       }
       this.timeout = setTimeout(() => {
         if (this.searchValue.keyword) {
+          // 非会员用户
+          if (this.userInfo && this.userInfo.userType !== 1) {
+            const _this = this
+            this.$warning({
+              title: '权限受限',
+              content: '该功能仅VIP及以上会员使用，您可以购买或升级会员',
+              okText: '立即升级',
+              closable: true,
+              onOk() {
+                return new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    _this.$router.push({ path: '/pay' })
+                    resolve()
+                  }, 1000)
+                }).catch(() => console.log('Oops errors!'))
+              }
+            })
+            return
+          }
+          //  return
           insearchData
             .call(this, {
               kolId: this.$route.query.kolId,
@@ -128,7 +148,7 @@ export default {
               keyword: encodeURI(encodeURI(this.searchValue.keyword))
             })
             .then(() => {
-              if (this.searchValue.type === '4') {
+              if (this.searchValue.type === '3') {
                 this.defaultComment = true
               } else {
                 this.defaultComment = false
@@ -153,6 +173,12 @@ export default {
       })
     }
   },
+  computed: {
+    // userinfo
+    ...mapGetters({
+      userInfo: 'userStorage'
+    })
+  },
   components: {
     ListContent,
     ListStatistics
@@ -176,5 +202,8 @@ export default {
     padding: 20px;
     margin-top: 15px;
   }
+}
+.ant-modal-content .ant-modal-close .ant-modal-close-x i {
+  color: rgba(0, 0, 0, 0.45);
 }
 </style>

@@ -1,42 +1,45 @@
 <template>
   <div class="top" v-if="fansInfo.length">
-    <h3>榜首粉丝争夺战</h3>
+    <!-- <h3>榜首粉丝争夺战</h3> -->
     <div class="top-info">
       <div class="top-left animated bounceInLeft">
-        <div class="left-text">
-          <h4>{{fansInfo[0].kolName}}</h4>
-          <p>认证信息：{{ fansInfo[0].isApprove }}，{{ fansInfo[0].approveDescription }}</p>
-        </div>
         <div class="left-img">
           <a-avatar :src="fansInfo[0].kolImg" />
-          <p class="fans">粉丝数</p>
-          <countTo
-            class="fansNum"
-            :startVal="startValLeft"
-            :autoplay="true"
-            :endVal="fansInfo[0].fansNum"
-            :duration="3000"
-            separator=","
-          ></countTo>
+          <h4>{{fansInfo[0].kolName}}</h4>
+          <p class="fans">
+            粉丝数：
+            <countTo
+              class="fansNum"
+              :startVal="startValLeft"
+              :autoplay="true"
+              :endVal="fansInfo[0].fansNum"
+              :duration="3000"
+              separator=","
+            ></countTo>
+          </p>
         </div>
       </div>
-      <div class="top-middle">VS</div>
+      <div class="top-middle">
+        <img src="../../assets/image/pkbanner2.png" alt />
+        <a-button type="primary" size="large" style="background: #ff5847;">
+          <router-link to="/rank">立即使用</router-link>
+        </a-button>
+      </div>
       <div class="top-right animated bounceInRight">
         <div class="right-img">
           <a-avatar :src="fansInfo[1].kolImg" />
-          <p class="fans">粉丝数</p>
-          <countTo
-            class="fansNum"
-            :startVal="startValRight"
-            :autoplay="true"
-            :endVal="fansInfo[1].fansNum"
-            :duration="3000"
-            separator=","
-          ></countTo>
-        </div>
-        <div class="right-text">
           <h4>{{fansInfo[1].kolName}}</h4>
-          <p>认证信息：{{ fansInfo[1].isApprove }}，{{ fansInfo[1].approveDescription }}</p>
+          <p class="fans">
+            粉丝数：
+            <countTo
+              class="fansNum"
+              :startVal="startValRight"
+              :autoplay="true"
+              :endVal="fansInfo[1].fansNum"
+              :duration="3000"
+              separator=","
+            ></countTo>
+          </p>
         </div>
       </div>
     </div>
@@ -55,9 +58,13 @@ export default {
       fansInfo: []
     }
   },
-  created() {
+  mounted() {
     pkData().then(res => {
-      this.fansInfo = res.bilibiliKolPkDatas || []
+      if (res.code === 200) {
+        this.fansInfo = res.bilibiliKolPkDatas || []
+        this.$emit('newsContentInfoList', res.newsContentInfoList || [])
+        this.$emit('helpUserData', res.helpUserData || {})
+      }
     })
   },
   components: {
@@ -73,11 +80,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  h3 {
-    font-size: @h3;
-    line-height: 48px;
-    padding: 24px 0;
-  }
+  width: 1200px;
   .top-info {
     display: flex;
     justify-content: center;
@@ -85,46 +88,34 @@ export default {
 
     .top-left {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       flex: 1;
-      .left-text {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        margin-right: 24px;
-        h4 {
-          font-size: 18px;
-          line-height: 42px;
-          font-weight: bold;
-          color: rgba(73, 72, 72, 1);
-          padding-right: 12px;
-        }
-        p {
-          font-weight: 400;
-          color: rgba(46, 46, 46, 1);
-          line-height: 24px;
-          font-size: 16px;
-        }
-      }
       .left-img {
         display: flex;
         flex-direction: column;
         align-items: center;
         .ant-avatar {
-          width: 80px;
-          height: 80px;
+          width: 120px;
+          height: 120px;
+          box-shadow: 0px 0px 20px rgb(114, 112, 112);
+        }
+        h4 {
+          line-height: 24px;
+          font-size: 18px;
+          margin: 32px 0 6px;
+          font-weight: bold;
+          color: #fff;
         }
         .fans {
           line-height: 24px;
-          margin: 12px 0;
           font-weight: bold;
-          color: rgba(73, 72, 72, 1);
+          color: #fff;
         }
         .fansNum {
           line-height: 24px;
           color: @gloableColor;
           font-weight: 600;
-          font-size: 20px;
+          font-size: 18px;
           font-family: Microsoft YaHei;
           font-weight: bold;
         }
@@ -132,58 +123,49 @@ export default {
     }
 
     .top-middle {
-      flex: 0 0 100px;
+      flex: 0 0 400px;
       text-align: center;
-      width: 25px;
-      height: 80px;
-      font-size: 24px;
-      font-family: Microsoft YaHei;
-      font-weight: bold;
-      color: @gloableColor;
-      line-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: -80px;
+      img {
+        width: 320px;
+        height: 300px;
+      }
     }
 
     .top-right {
       display: flex;
       flex: 1;
-      .right-text {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-left: 24px;
-        h4 {
-          font-size: 18px;
-          line-height: 42px;
-          font-weight: bold;
-          color: rgba(73, 72, 72, 1);
-          padding-right: 12px;
-        }
-        p {
-          font-weight: 400;
-          color: rgba(46, 46, 46, 1);
-          line-height: 24px;
-          font-size: 16px;
-        }
-      }
+      justify-content: center;
       .right-img {
         display: flex;
         flex-direction: column;
         align-items: center;
         .ant-avatar {
-          width: 80px;
-          height: 80px;
+          width: 120px;
+          height: 120px;
+          box-shadow: 0px 0px 20px rgb(114, 112, 112);
+        }
+        h4 {
+          line-height: 24px;
+          font-size: 18px;
+          margin: 32px 0 6px;
+          font-weight: bold;
+          color: #fff;
         }
         .fans {
           line-height: 24px;
-          margin: 12px 0;
           font-weight: bold;
-          color: rgba(73, 72, 72, 1);
+          color: #fff;
         }
         .fansNum {
           line-height: 24px;
           color: @gloableColor;
           font-weight: 600;
-          font-size: 20px;
+          font-size: 18px;
           font-family: Microsoft YaHei;
           font-weight: bold;
         }

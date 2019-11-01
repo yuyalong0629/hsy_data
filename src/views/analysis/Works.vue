@@ -6,7 +6,7 @@
         <a-button
           type="primary"
           :disabled="!kolVideoInfoMap.prev"
-          @click="clickPrev(kolVideoInfoMap.next, kolVideoInfoMap.pageNo)"
+          @click="clickPrev(kolVideoInfoMap.prev, kolVideoInfoMap.pageNo)"
         >
           <a-icon type="left" />上一页
         </a-button>
@@ -27,7 +27,9 @@
         style="margin: 20px 0; background: #f1f5f6;"
       >
         <div class="work-list">
-          <div class="work-list-title">{{ kolVideoInfoMap.title }}</div>
+          <a :href="kolVideoInfoMap.sourceUrl" target="_blank" style="color: #000;">
+            <div class="work-list-title">{{ kolVideoInfoMap.title }}</div>
+          </a>
           <p class="work-list-content">{{ kolVideoInfoMap.summary }}</p>
           <div class="work-list-label">
             <a-tag
@@ -110,7 +112,6 @@ export default {
         barrageNum: '弹幕数',
         collectNum: '收藏数',
         commentNum: '评论数',
-        fansNum: '粉丝数',
         praiseNum: '点赞数'
       }
     }
@@ -128,7 +129,6 @@ export default {
           'barrageNum',
           'collectNum',
           'commentNum',
-          'fansNum',
           'praiseNum'
         ],
         rows: []

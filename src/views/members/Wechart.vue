@@ -24,32 +24,33 @@ export default {
   data() {
     return {
       activeKey: '1',
-      userInfoId: '',
+      userId: '',
       thirdAccountInfo: ''
     }
   },
-  created() {
-    // 初始化用户信息
-    userInfo().then(res => {
-      console.log(res)
-      if (res.code === 200) {
-        // 是否已绑定手机号
-        this.userInfoId = res.userInfoMap.id || ''
-        this.thirdAccountInfo = res.thirdAccountInfo || ''
-      }
-    })
-  },
   mounted() {
-    const wxLogin = new WxLogin({
-      id: 'login_container',
-      appid: 'wx05050984d40b684f',
-      scope: 'snsapi_login',
-      redirect_uri: 'http://www.hsydata.com/',
-      state: this.userInfoId,
-      style: 'black',
-      href:
-        'data:text/css;base64,LnRpdGxlIHsKICBkaXNwbGF5OiBub25lOwp9CgouaW5mbyB7CiAgZGlzcGxheTogbm9uZTsKfQo='
-    })
+    userInfo()
+      .then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          // 是否已绑定手机号
+          this.userInfoId = res.userInfoMap.id || ''
+          this.thirdAccountInfo = res.thirdAccountInfo || ''
+        }
+      })
+      .then(() => {
+        const userId = this.userInfoId
+        const wxLogin = new WxLogin({
+          id: 'login_container',
+          appid: 'wx05050984d40b684f',
+          scope: 'snsapi_login',
+          redirect_uri: 'http://www.hsydata.com/',
+          state: userId,
+          style: 'black',
+          href:
+            'data:text/css;base64,LnRpdGxlIHsKICBkaXNwbGF5OiBub25lOwp9CgouaW5mbyB7CiAgZGlzcGxheTogbm9uZTsKfQo='
+        })
+      })
   },
   methods: {},
   components: {

@@ -3,19 +3,19 @@
     <div class="rank-select">
       <a-radio-group defaultValue="0" buttonStyle="solid" @change="onChangeRadio">
         <a-radio-button value="0">总榜</a-radio-button>
-        <a-radio-button value="1">月涨粉榜</a-radio-button>
+        <!-- <a-radio-button value="1">月涨粉榜</a-radio-button> -->
         <!-- <a-radio-button value="2">月掉粉榜</a-radio-button> -->
         <a-radio-button value="3">周涨粉榜</a-radio-button>
-        <!-- <a-radio-button value="4">周掉粉榜</a-radio-button> -->
+        <a-radio-button value="4">周掉粉榜</a-radio-button>
       </a-radio-group>
-      <a-select
+      <!-- <a-select
         v-if="dateLists.length"
         :value="dateValue || dateLists[0]"
         style="width: 200px; margin-left: 15px;"
         @change="onChangeSelect"
       >
         <a-select-option v-for="(item, index) of dateLists" :key="index">{{ item }}</a-select-option>
-      </a-select>
+      </a-select>-->
     </div>
     <div class="rank-tab">
       <a-spin :spinning="getLoading">
@@ -67,11 +67,12 @@ export default {
       columns,
       dateValue: undefined,
       timeout: null,
-      fansTitle: '粉丝数',
+      fansTitle: '掉粉数',
       pagination: {
         pageSize: 20,
         hideOnSinglePage: true,
-        total: 0
+        total: 0,
+        current: 1
       },
       params: [
         {
@@ -111,26 +112,22 @@ export default {
       this.dateValue = undefined
       // 切换榜单改变title
       this.fansTitle =
-        e.target.value === '1' || e.target.value === '3'
-          ? '增量粉丝数'
-          : '粉丝数'
+        e.target.value === '1' || e.target.value === '3' ? '增粉数' : '掉粉数'
       const target = this.params.map(item => ({
         ...item,
-        flag: e.target.value === '1' ? '2' : e.target.value === '3' ? '1' : '0',
-        sortord: e.target.value === '1' || e.target.value === '3' ? '2' : '',
+        flag:
+          e.target.value === '1' || e.target.value === '2'
+            ? '2'
+            : e.target.value === '3' || e.target.value === '4'
+            ? '1'
+            : '0',
+        sortord:
+          e.target.value === '1' || e.target.value === '3'
+            ? '2'
+            : e.target.value === '2' || e.target.value === '4'
+            ? '1'
+            : '',
         dateNum: 0
-        // flag:
-        //   e.target.value === '1' || e.target.value === '2'
-        //     ? '2'
-        //     : e.target.value === '3' || e.target.value === '4'
-        //     ? '1'
-        //     : '0',
-        // sortord:
-        //   e.target.value === '1' || e.target.value === '3'
-        //     ? '2'
-        //     : e.target.value === '2' || e.target.value === '4'
-        //     ? '1'
-        //     : ''
       }))
       this.$emit('tabParam', ...target)
       this.params = [...target]
@@ -147,13 +144,18 @@ export default {
     },
     // Tab change
     handleTableChange(pagination, filters, sorter) {
+      // 锚点定位
+      const anchor = document.querySelector('.rank-tabs')
+      if (anchor) {
+        anchor.scrollIntoView(true)
+      }
+
       const target = this.params.map(item => ({
         ...item,
         pageNo: pagination.current - 1
       }))
       this.$emit('pageParam', ...target)
       this.params = [...target]
-      console.log(this.params)
     }
   },
   computed: {
@@ -180,7 +182,9 @@ export default {
     // 监听分页总页数
     tabData(val) {
       if (val) {
+        console.log(val)
         this.pagination.total = val.count
+        this.pagination.current = val.index === 0 ? 1 : +val.index + 1
       }
     }
   },
@@ -201,6 +205,9 @@ export default {
     margin: 20px 0;
     .rank-tab-media {
       height: 42px;
+      div {
+        padding-left: 12px;
+      }
       img {
         border: 0;
         margin-right: 8px;

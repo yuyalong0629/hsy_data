@@ -14,11 +14,8 @@ import 'swiper/dist/css/swiper.css'
 
 import animate from 'animate.css'
 
-import VueParticles from 'vue-particles'
-
 Vue.use(VueStorage, config.storageOptions)
 Vue.use(VueClipboard)
 Vue.use(VueLazyload)
 Vue.use(VueAwesomeSwiper /* { default global options } */)
 Vue.use(animate)
-Vue.use(VueParticles)

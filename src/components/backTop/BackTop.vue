@@ -2,17 +2,17 @@
   <div id="components-back-top-demo-custom">
     <a-back-top :visibilityHeight="visibilityHeight">
       <div class="ant-back-top-service">
-        <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=3189427318&site=qq&menu=yes">
-          <img
-            border="0"
-            src="http://wpa.qq.com/pa?p=2:3189427318:52"
-            alt="点击这里给我发消息"
-            title="点击这里给我发消息"
-          />
-        </a>
+        <a-tooltip placement="left">
+          <template slot="title">
+            <span>点我咨询</span>
+          </template>
+          <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=3189427318&site=qq&menu=yes">
+            <img border="0" src="http://wpa.qq.com/pa?p=2:3189427318:52" alt="点击这里给我发消息" title />
+          </a>
+        </a-tooltip>
       </div>
       <div class="ant-back-top-inner">
-        <a-icon type="rocket" />
+        <a-icon type="arrow-up" style="color: #b8b3b3;" />
       </div>
     </a-back-top>
   </div>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       buttonWidth: 40,
-      visibilityHeight: 0
+      visibilityHeight: -100
     }
   }
 }
@@ -32,24 +32,27 @@ export default {
 <style lang="less" scope>
 #components-back-top-demo-custom {
   .ant-back-top {
-    bottom: 300px;
+    bottom: 360px;
+    right: 40px;
   }
 
   .ant-back-top-service {
-    width: 40px;
-    background-color: #da5054;
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
     text-align: center;
-    padding: 6px 0;
+    padding: 12px 0;
     border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid #fff;
+    border: 1px solid #f1f1f1;
+    border-bottom: none;
   }
   .ant-back-top-inner {
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
     border-radius: 0 0 4px 4px;
-    background-color: #da5054;
-    color: #fff;
+    background-color: #fff;
+    border: 1px solid #f1f1f1;
     text-align: center;
     font-size: 20px;
   }

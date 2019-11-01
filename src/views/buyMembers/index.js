@@ -4,6 +4,7 @@ export const columns = [
     slots: { title: 'permissionlTitle' },
     dataIndex: 'permission',
     align: 'center',
+    width: 350,
     key: 'permission'
   },
   {

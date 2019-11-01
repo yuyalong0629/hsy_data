@@ -54,8 +54,8 @@ export function insearchData(params) {
         this.$store.commit('loading', false)
       }
     })
-    .catch(err => {
+    .catch(() => {
       this.$store.commit('loading', false)
-      this.$message.error(err)
+      // this.$message.error(err)
     })
 }

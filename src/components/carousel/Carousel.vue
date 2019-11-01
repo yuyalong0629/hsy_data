@@ -1,21 +1,28 @@
 <template>
-  <swiper :options="swiperOption">
-    <!-- slides -->
-    <swiper-slide v-for="(item, index) of list" :key="index">
-      <div class="inner">
-        <div class="gallery-item-desc">
-          <h3 class="typography-label">{{ item.title }}</h3>
-          <p class="typography-body">{{ item.text }}</p>
-        </div>
-        <figure class="gallery-item-img">
-          <img :src="item.img" />
-        </figure>
-      </div>
-    </swiper-slide>
-    <!-- Optional controls -->
-    <div class="swiper-button-prev" slot="button-prev"></div>
-    <div class="swiper-button-next" slot="button-next"></div>
-  </swiper>
+  <div class="carousel-container">
+    <div class="carousel-swiper">
+      <swiper :options="swiperOption" ref="mySwiper">
+        <!-- slides -->
+        <swiper-slide v-for="item of list" :key="item.index">
+          <div class="inner">
+            <img :src="item.img" alt />
+          </div>
+        </swiper-slide>
+        <!-- Optional controls -->
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
+    </div>
+    <ul class="carousel-text">
+      <li
+        :class="{ activeIndex: targetIndex === item.index }"
+        v-for="item of listData"
+        :key="item.index"
+      >
+        <p style="font-weight: bold;">{{ item.title }}</p>
+        <p v-for="(cItem,index) of item.text" :key="index">{{ cItem }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -24,34 +31,53 @@ import carousel from './index.js'
 export default {
   name: 'carrousel',
   data() {
+    const _this = this
     return {
       list: carousel,
+      targetIndex: 0,
+      listData: [
+        {
+          index: 0,
+          title: '账号搜索',
+          text: [
+            '关键词搜索——模糊语义兼顾精确包含',
+            '高级搜索——多标签和多维度筛选条件'
+          ]
+        },
+        {
+          index: 1,
+          title: '排行榜单',
+          text: ['总榜\t月周涨粉榜\t月周掉粉榜']
+        },
+        { index: 2, title: '投前分析', text: ['历史数据统计\t粉丝画像'] },
+        {
+          index: 3,
+          title: '内容搜索',
+          text: ['作品标题+简介\t作品标签+评论\t纯评论内容']
+        },
+        {
+          index: 4,
+          title: '数据监测',
+          text: ['监测对象：发布作品/账号', '监测时长：24h / 48h / 72h']
+        }
+      ],
       swiperOption: {
         loop: true,
+        direction: 'vertical',
         speed: 500,
-        centeredSlides: true,
         autoplay: {
-          delay: 5000,
-          stopOnLastSlide: true,
-          disableOnInteraction: true
+          delay: 3000 // 1秒切换一次
         },
-        coverflowEffect: {
-          rotate: 0,
-          stretch: 0,
-          depth: 10,
-          modifier: 10,
-          slideShadows: false
+        mousewheel: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
         },
-        effect: 'coverflow',
-        slidesPerView: 2,
         on: {
-          init: function() {
-            this.slides.removeClass('init')
+          slideChangeTransitionStart: function() {
+            // console.log(this.realIndex)
+            _this.targetIndex = this.realIndex
           }
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
         }
       }
     }
@@ -60,54 +86,63 @@ export default {
 </script>
 
 <style lang="less" scope>
-.inner {
-  height: 640px;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px 2px 0 0;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s;
-  .gallery-item-desc {
-    flex: 0 0 100px;
-    padding: 24px;
-    .typography-label {
-      font-size: 24px;
-      text-align: center;
-      line-height: 40px;
-      margin-bottom: 12px;
-    }
-    .typography-body {
-      line-height: 24px;
-      text-align: center;
-    }
-  }
-  .gallery-item-img {
-    flex: 1;
-    img {
-      width: 100%;
-      height: 96%;
-    }
-  }
-  &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-    border-color: rgba(0, 0, 0, 0.09);
-  }
-}
+@import '~assets/styles/mixins.less';
 
-.swiper-container-3d .swiper-slide-shadow-left {
-  background-image: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0)
-  );
-}
-.swiper-container-3d .swiper-slide-shadow-right {
-  background-image: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0.3),
-    rgba(0, 0, 0, 0)
-  );
+.carousel-container {
+  .basicWidth();
+  height: 400px;
+  display: flex;
+  .carousel-swiper {
+    width: 830px;
+    height: 400px;
+    .swiper-container {
+      width: 100%;
+      height: 100%;
+      .inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(232, 232, 232);
+        border-image: initial;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease 0s;
+        img {
+          height: 100%;
+        }
+      }
+      .inner:hover {
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.19);
+      }
+      .swiper-pagination-bullet-active {
+        background: #ff5847;
+      }
+    }
+  }
+
+  .carousel-text {
+    width: 300px;
+    display: flex;
+    margin-left: 70px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    li {
+      padding: 6px 0;
+      list-style: disc;
+      width: 100%;
+      cursor: pointer;
+      p {
+        line-height: 22px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+    .activeIndex {
+      color: #ff5847;
+    }
+  }
 }
 </style>

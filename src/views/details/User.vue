@@ -171,12 +171,13 @@ export default {
         this.$store.commit('loginModal', true)
         return
       }
-      this.$router.push({
+      const { href } = this.$router.resolve({
         path: '/similar',
         query: {
           kolId: this.$route.query.kolId
         }
       })
+      window.open(href, '_blank')
     },
     // 监控下次作品
     handelClickMonitor(name) {
@@ -185,13 +186,14 @@ export default {
         this.$store.commit('loginModal', true)
         return
       }
-      this.$router.push({
+      const { href } = this.$router.resolve({
         path: '/monitor',
         query: {
           kolId: this.$route.query.kolId,
           name: name
         }
       })
+      window.open(href, '_blank')
     },
     // 投前分析
     handelClickAnalysis() {
@@ -201,12 +203,13 @@ export default {
         return
       }
       if (this.userInfo.userType === 1) {
-        this.$router.push({
+        const { href } = this.$router.resolve({
           path: '/analysis',
           query: {
             kolId: this.$route.query.kolId
           }
         })
+        window.open(href, '_blank')
       } else {
         this.$message.warn('您还不是会员,无法使用此功能')
       }

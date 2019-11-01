@@ -1,13 +1,7 @@
 <template>
   <div class="rank">
     <div class="rank-container">
-      <rank-list
-        :platformInfos="platformInfos"
-        :themeInfos="themeInfos"
-        :sorts="sorts"
-        @listParam="listParam"
-        @sessionParam="sessionParam"
-      />
+      <rank-list @listParam="listParam" @sessionParam="sessionParam" />
 
       <rank-tabs
         :loading="loading"
@@ -34,9 +28,6 @@ export default {
   mixins: [mixinBasic],
   data() {
     return {
-      platformInfos: [],
-      themeInfos: [],
-      sorts: [],
       tabData: {},
       dateLists: [],
       loading: true,
@@ -60,12 +51,6 @@ export default {
       return ranklist(params)
         .then(res => {
           if (res.code === 200) {
-            // 支持平台信息
-            this.platformInfos = res.platformInfos || []
-            // 行业分类
-            this.themeInfos = res.themeInfos || []
-            // 排序方式
-            this.sorts = res.sorts || []
             // Tabs
             this.tabData = res.page || {}
             // 榜单日期
@@ -82,25 +67,25 @@ export default {
     },
     // $emit list params
     listParam(val) {
-      const target = this.params.map(item => ({ ...item, ...val }))
+      const target = this.params.map(item => ({ ...item, ...val, pageNo: 0 }))
       this.getRankList(...target)
       this.params = [...target]
     },
     // $emit tab radio params
     tabParam(val) {
-      const target = this.params.map(item => ({ ...item, ...val }))
+      const target = this.params.map(item => ({ ...item, ...val, pageNo: 0 }))
       this.getRankList(...target)
       this.params = [...target]
     },
     // $emit tab select params
     selectParam(val) {
-      const target = this.params.map(item => ({ ...item, ...val }))
+      const target = this.params.map(item => ({ ...item, ...val, pageNo: 0 }))
       this.getRankList(...target)
       this.params = [...target]
     },
     // $emit session params
     sessionParam(val) {
-      const target = this.params.map(item => ({ ...item, ...val }))
+      const target = this.params.map(item => ({ ...item, ...val, pageNo: 0 }))
       this.getRankList(...target)
       this.params = [...target]
     },

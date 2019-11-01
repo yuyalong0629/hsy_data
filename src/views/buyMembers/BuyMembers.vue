@@ -10,7 +10,7 @@
         </template>
         <template slot="normalTitle">
           <div class="buyMembers-vip">
-            <p>VIP会员</p>
+            <p>普通会员</p>
           </div>
         </template>
         <template slot="vipTitle">

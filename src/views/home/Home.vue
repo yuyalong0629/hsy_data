@@ -1,72 +1,56 @@
 <template>
   <div class="home">
-    <!-- banner -->
-    <div class="banner">
-      <h2 class="banner-h2-title animated bounceInLeft">让天下没有难投的新媒体广告</h2>
-      <h3 class="banner-h3-title animated bounceInRight">快速找号、轻松辨号、广告价值分析、投放数据监控，投广告快准稳</h3>
-      <ul class="banner-img">
-        <li v-for="(item, index) of bannerList" :key="index">
-          <!-- <img v-lazy="item" alt /> -->
-        </li>
-      </ul>
-    </div>
-
     <!-- 榜首 -->
     <div class="for-top">
-      <hsy-forTop />
+      <hsy-forTop @newsContentInfoList="newsContentInfoList" @helpUserData="helpUserData" />
     </div>
 
-    <!-- select -->
-    <div class="select" ref="select">
-      <div
-        class="select-list animated"
-        :class="{ pulse: isScroll }"
-        v-for="(item, index) of selectlist"
-        :key="index"
-      >
-        <div class="select-list-left">
-          <img v-lazy="item.img" alt />
-        </div>
-        <div class="select-list-right">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-          <p>{{ item.slogan }}</p>
-        </div>
-      </div>
+    <!-- 火烧云核心功能 -->
+    <div class="home-core" ref="core">
+      <home-rote />
+    </div>
+
+    <!-- 你可以做什么 -->
+    <div class="home-select">
+      <home-work :autoplay="autoplay" :getHelpUserData="getHelpUserData" />
     </div>
 
     <!-- Carousel -->
-    <div class="carousel">
-      <div class="carousel-container">
-        <hsy-carousel />
-      </div>
+    <div class="home-carousel">
+      <h3 class="home-carousel-title">海量账号 随意搜索</h3>
+      <hsy-carousel />
     </div>
 
-    <!-- more -->
-    <div class="more">
-      <div class="more-container">
-        <h2 class="banner-h2-title">更多实用工具</h2>
-        <ul class="more-nav">
-          <li
-            class="more-item animated"
-            :class="{heartBeat: isFlip}"
-            style="animation-duration: 2000ms"
-            v-for="(item, index) of morelist"
+    <div class="home-more">
+      <home-more />
+    </div>
+
+    <!-- 火烧云课堂 -->
+    <div class="home-classroom">
+      <div class="classroom-container">
+        <h2 class="banner-h2-title">火烧云课堂</h2>
+        <div class="classroom-content">
+          <a-card
+            hoverable
+            style="width: 240px"
+            v-for="(item, index) in  contentInfoList"
             :key="index"
+            @click="handleDetail(item.id, item.type)"
           >
-            <div class="fade-in">
-              <img v-lazy="item.img" alt />
-              <h3>{{ item.title }}</h3>
-            </div>
-            <div class="fade-out">
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.text }}</p>
-            </div>
-          </li>
-        </ul>
+            <template slot="cover">
+              <div class="ant-card-actions">
+                <img class="classroom-content-img" alt="example" :src="item.coverImage" />
+                <div class="classroom-content-hot">{{ index === 0 ? '最热' : '热文' }}</div>
+              </div>
+            </template>
+            <a-card-meta :title="item.title">
+              <template slot="description">{{ item.summary }}</template>
+            </a-card-meta>
+          </a-card>
+        </div>
         <div class="now">
-          <a-button size="large" type="primary">
-            <router-link to="/rank">立即使用</router-link>
+          <a-button size="large" type="primary" style="background: #ff5847;">
+            <router-link :to="{path: '/mine', query: {index: 0}}">查看更多内容</router-link>
           </a-button>
         </div>
       </div>
@@ -76,19 +60,21 @@
 
 <script>
 // @ is an alias to /src
-import { bannerList, selectlist, morelist } from './list'
+import { morelist } from './list'
 import Carousel from '@/components/carousel/Carousel'
+import HomeRote from '@/components/homeRote/HomeRote'
+import HomeWork from '@/components/homeWork/HomeWork'
+import HomeMore from '@/components/homeMore/HomeMore'
 import ForTop from '@/components/forTop/ForTop'
 
 export default {
   name: 'home',
   data() {
     return {
-      bannerList: bannerList,
-      selectlist: selectlist,
       morelist: morelist,
-      isScroll: false,
-      isFlip: true
+      autoplay: false,
+      contentInfoList: [],
+      getHelpUserData: {}
     }
   },
   mounted() {
@@ -105,22 +91,32 @@ export default {
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop
-      const offsetTop = this.$refs.select.offsetTop
-      if (scrollTop > 500) {
-        this.isScroll = true
+      const offsetTop = this.$refs.core.offsetTop
+      if (scrollTop > offsetTop) {
+        this.autoplay = true
       } else {
-        this.isScroll = false
+        this.autoplay = false
       }
-      if (scrollTop > 1500) {
-        this.isFlip = true
-      } else {
-        this.isFlip = false
-      }
+    },
+    newsContentInfoList(val) {
+      this.contentInfoList = val
+    },
+    helpUserData(val) {
+      this.getHelpUserData = val
+    },
+    handleDetail(index, type) {
+      this.$router.push({
+        path: '/mine/detail',
+        query: { id: index, type: type }
+      })
     }
   },
   components: {
     'hsy-carousel': Carousel,
-    'hsy-forTop': ForTop
+    'hsy-forTop': ForTop,
+    'home-rote': HomeRote,
+    'home-work': HomeWork,
+    'home-more': HomeMore
   }
 }
 </script>
@@ -130,166 +126,100 @@ export default {
 @import '~assets/styles/mixins.less';
 
 .home {
-  .banner {
-    height: 540px;
-    background: url('../../assets/image/banner.png') no-repeat center;
+  .for-top {
+    background: url('../../assets/image/pkbanner.png') no-repeat center;
     background-size: cover;
+    height: 540px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-content: center;
-    .banner-h2-title {
-      font-size: @h2;
-      text-align: center;
-      color: #ebebeb;
-      line-height: 50px;
-    }
-    .banner-h3-title {
-      font-size: @h3;
-      text-align: center;
-      color: #ebebeb;
-      line-height: 40px;
-    }
-    .banner-img {
-      display: flex;
-      justify-content: center;
-      margin-top: 50px;
-      li {
-        flex: 0 0 100px;
-        text-align: center;
-      }
-    }
   }
 
-  .for-top {
+  .home-core {
     .basicWidth();
     padding: 24px 0;
-  }
-
-  .select {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-select {
+    width: 100%;
+    height: 580px;
+    background: url('../../assets/image/banner.png') no-repeat center;
+    background-size: cover;
+  }
+
+  .home-carousel {
+    width: 100%;
+    padding: 48px 0 120px;
     .basicWidth();
-    flex-wrap: wrap;
-    justify-content: center;
-    .select-list {
-      margin: 30px;
-      background: #fef9f8;
-      width: 45%;
-      display: flex;
-      padding: 30px;
-      .select-list-left {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 20px;
-        img {
-          width: 80px;
-          height: 80px;
-        }
-      }
-      .select-list-right {
-        display: flex;
-        flex-direction: column;
-        h3 {
-          font-size: 22px;
-          line-height: 40px;
-        }
-        p {
-          font-size: 16px;
-          line-height: 22px;
-        }
-      }
+    .home-carousel-title {
+      font-size: @h3;
+      text-align: center;
+      padding: 12px 0 60px;
     }
   }
 
-  .carousel {
-    width: 100%;
-    margin: 50px 0;
-    .carousel-container {
-      .basicWidth();
-      // width: 1280px;
-      // margin: 0 auto;
-    }
+  .home-more {
+    min-height: 600px;
+    background: url('../../assets/image/banner2.png') no-repeat center;
+    background-size: cover;
   }
 
-  .more {
+  .home-classroom {
     width: 100%;
     margin: 50px 0;
-    .more-container {
+    .classroom-container {
       .basicWidth();
       width: 1200px;
       display: flex;
       justify-content: center;
       flex-direction: column;
       .now {
-        padding: 24px 0 0;
+        padding: 48px 0 0;
         text-align: center;
       }
       .banner-h2-title {
-        font-size: @h2;
+        font-size: @h3;
         line-height: 100px;
         text-align: center;
       }
-      .more-nav {
+      .classroom-content {
         display: flex;
         justify-content: space-around;
-        .more-item {
-          display: flex;
+        .ant-card-actions {
           position: relative;
-          min-width: 240px;
-          min-height: 300px;
-          cursor: pointer;
-          .fade-in {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
+          .classroom-content-img {
+            height: 160px;
             width: 100%;
-            padding: 30px;
-            img {
-              display: block;
-              margin: 0 auto;
-              width: 100px;
-              height: 100px;
-            }
-            h3 {
-              text-align: center;
-              line-height: 50px;
-              font-size: @h3;
-            }
           }
-          .fade-out {
-            display: flex;
+          .classroom-content-hot {
+            right: 8px;
+            bottom: 8px;
             position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1;
-            max-width: 240px;
-            padding: 60px 30px;
-            border-radius: 4px;
-            flex-direction: column;
-            background: #fff;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            h3 {
-              text-align: center;
-              line-height: 50px;
-              font-size: @h3;
-              color: @active;
-            }
-            p {
-              line-height: 26px;
-              text-indent: 28px;
-            }
-          }
-          &:hover {
-            .fade-out {
-              opacity: 1;
-              transition: 0.5s;
-            }
+            background: #d21306;
+            width: 60px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
           }
         }
+      }
+
+      /deep/ .ant-card-meta-detail .ant-card-meta-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-all;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .ant-card-meta-description {
+        .ellipisisClamp();
       }
     }
   }

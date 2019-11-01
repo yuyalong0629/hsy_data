@@ -52,10 +52,10 @@ service.interceptors.response.use(response => {
       store.commit('logout', false)
       // 未登录状态显示登录 Modal
       store.commit('loginModal', true)
-      notification.error({
-        message: '用户未登录或登录失效'
-      })
-      // router.replace({ path: '/home' })
+      router.replace({ path: '/home' })
+      // notification.error({
+      //   message: '用户未登录或登录失效'
+      // })
       // resolve()
     }, 1000)
   }

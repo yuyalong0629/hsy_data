@@ -33,12 +33,16 @@
 
 <script>
 import { mixinBasic } from '@/utils/mixin.js'
+import { searchKol, searchFilter } from 'api/search'
 
 export default {
   name: 'ranklist',
   mixins: [mixinBasic],
   data() {
     return {
+      platformInfos: [],
+      themeInfos: [],
+      sorts: [],
       themeIndex: 0,
       sortsIndex: 0,
       params: [
@@ -50,30 +54,20 @@ export default {
       ]
     }
   },
-  props: {
-    platformInfos: {
-      type: Array,
-      required: false,
-      default: function() {
-        return []
+  created() {
+    searchFilter({ type: 0 }).then(res => {
+      if (res.code === 200) {
+        // 支持平台信息
+        this.platformInfos = res.platformInfos || []
+        // 行业分类
+        this.themeInfos = res.themeInfos || []
+        // 排序方式
+        this.sorts = res.sorts || []
       }
-    },
-    themeInfos: {
-      type: Array,
-      required: false,
-      default: function() {
-        return []
-      }
-    },
-    sorts: {
-      type: Array,
-      required: false,
-      default: function() {
-        return []
-      }
-    }
+    })
   },
   mounted() {
+    // 初始化
     this.presenceSession()
   },
   methods: {
@@ -86,15 +80,15 @@ export default {
       }
       this.timeout = setTimeout(() => {
         // storage
-        this.$ls.set('themeParam', {
-          index: this.themeIndex,
-          id: id
-        })
+        // this.$ls.set('themeParam', {
+        //   index: this.themeIndex,
+        //   id: id
+        // })
         const target = this.params.map(item => ({
           ...item,
           tId: id
         }))
-        this.$emit('listParam', ...target)
+        this.$emit('listParam', { ...target })
         this.params = [...target]
       }, 300)
     },
@@ -107,10 +101,10 @@ export default {
       }
       this.timeout = setTimeout(() => {
         // storage
-        this.$ls.set('sortsParam', {
-          index: this.sortsIndex,
-          id: id
-        })
+        // this.$ls.set('sortsParam', {
+        //   index: this.sortsIndex,
+        //   id: id
+        // })
         const target = this.params.map(item => ({
           ...item,
           sort: id
@@ -121,24 +115,24 @@ export default {
     },
     // 初始化判断是否存在session
     presenceSession() {
-      const getTheme = this.$ls.get('themeParam')
-      const getSorts = this.$ls.get('sortsParam')
-      if (getTheme) {
-        this.themeIndex = getTheme.index || 0
-        const target = this.params.map(item => ({
-          ...item,
-          tId: getTheme.id
-        }))
-        this.params = [...target]
-      }
-      if (getSorts) {
-        this.sortsIndex = getSorts.index || 0
-        const target = this.params.map(item => ({
-          ...item,
-          sort: getSorts.id
-        }))
-        this.params = [...target]
-      }
+      // const getTheme = this.$ls.get('themeParam')
+      // const getSorts = this.$ls.get('sortsParam')
+      // if (getTheme) {
+      //   this.themeIndex = getTheme.index || 0
+      //   const target = this.params.map(item => ({
+      //     ...item,
+      //     tId: getTheme.id
+      //   }))
+      //   this.params = [...target]
+      // }
+      // if (getSorts) {
+      //   this.sortsIndex = getSorts.index || 0
+      //   const target = this.params.map(item => ({
+      //     ...item,
+      //     sort: getSorts.id
+      //   }))
+      //   this.params = [...target]
+      // }
       this.$emit('sessionParam', ...this.params)
     }
   }

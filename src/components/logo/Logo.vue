@@ -15,6 +15,6 @@ export default {
 <style lang="less" scope>
 .logo {
   height: 80px;
-  width: 200px;
+  width: 144px;
 }
 </style>

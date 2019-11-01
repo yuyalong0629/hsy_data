@@ -13,6 +13,7 @@
         <component
           :is="componentId"
           :kolVideoInfoMap="kolVideoInfoMap"
+          :kolId="kolInfo.kolId"
           :dayDataMap="dayDataMap"
           :spinning="spinning"
           @pageNo="pageNo"
@@ -27,6 +28,7 @@ import User from '../details/User'
 import Works from './Works'
 import Fans from './Fans'
 import { videoData } from 'api/analysis'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'analysis',
@@ -94,18 +96,36 @@ export default {
       this.radioValue = e.target.value
       if (e.target.value === '1') {
         // 初始化历史作品内容
-        this.getVideo({
-          kolId: this.$route.query.kolId,
-          pageNo: 0
-        })
+        if (this.$route.query.type === '1') {
+          this.getVideo({
+            type: this.$route.query.type,
+            videoId: this.$route.query.videoId,
+            pageNo: 0
+          })
+        } else {
+          this.getVideo({
+            kolId: this.$route.query.kolId,
+            pageNo: 0
+          })
+        }
         this.componentId = 'hsy-works'
       } else {
+        if (this.userInfo && this.userInfo.userType !== 1) {
+          this.$message.warning('非会员用户无法查看')
+          return
+        }
         this.componentId = 'hsy-fans'
       }
     },
     pageNo(val) {
       this.getVideo({ kolId: this.$route.query.kolId, pageNo: val })
     }
+  },
+  computed: {
+    // userinfo
+    ...mapGetters({
+      userInfo: 'userStorage'
+    })
   },
   components: {
     'hsy-user': User,
